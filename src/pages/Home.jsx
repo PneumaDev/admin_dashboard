@@ -86,12 +86,12 @@ export default function Home() {
   ];
 
   return (
-    <div className="md:p-6 py-4">
+    <div className="md:p-6 my-10">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <div>
+        <div className="space-y-3">
           <h2 className="font-yantramanav font-bold text-white">
-            Welcome back, Paul Kamau
+            Welcome back, Paul Kamau.
           </h2>
           <p className="text-gray-300 mt-1 font-muktaVaani">
             Here's what's happening with your store today😊
@@ -159,7 +159,7 @@ export default function Home() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-sm justify-between text-gray-400">
+                <tr className="text-left text-sm justify-between text-gray-400 border-b rounded-b-md border-gray-600">
                   <th className="pb-4 pl-4 md:pr-0 pr-8">SN</th>
                   <th className="pb-4 md:pr-0 pr-16">Order ID</th>
                   <th className="pb-4 md:pr-0 pr-16">Customer</th>
@@ -172,15 +172,17 @@ export default function Home() {
                 {recentOrders.map((order, index) => (
                   <tr
                     key={index}
-                    className="border-t border-gray-700 m-4 hover:bg-gray-700 transition-colors cursor-pointer"
+                    className=" m-4 hover:bg-gray-700 transition-colors cursor-pointer"
                   >
-                    <td className="py-4 pl-4 text-gray-200">{index + 1}.</td>
+                    <td className="py-4 pl-4 text-gray-200 rounded-l-md">
+                      {index + 1}.
+                    </td>
                     <td className="py-4 text-gray-200">{order.id}</td>
 
                     <td className="py-4 text-gray-200">{order.customer}</td>
                     <td className="py-4 text-gray-400">{order.product}</td>
                     <td className="py-4 text-gray-200">{order.amount}</td>
-                    <td className="py-4">
+                    <td className="py-4 rounded-r-md">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
                           order.status === "Processing"
