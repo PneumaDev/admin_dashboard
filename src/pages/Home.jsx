@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Users,
   ShoppingBag,
@@ -10,8 +10,11 @@ import {
   Clock,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { AdminContext } from "../context/AdminContext";
 
 export default function Home() {
+  const { backendUrl } = useContext(AdminContext);
+
   const stats = [
     {
       title: "Total Revenue",
