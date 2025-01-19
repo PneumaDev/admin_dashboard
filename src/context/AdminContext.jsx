@@ -1,14 +1,61 @@
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export const AdminContext = createContext();
 
 const AdminContextProvider = (props) => {
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  // <------------Constants and States------------>
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [adminToken, setAdminToken] = useState(null);
+  const navigate = useNavigate();
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+  // <------------Handle Side Effects------------>
+  useEffect(() => {
+    const savedToken = localStorage.getItem("adminToken");
+    if (!adminToken && savedToken) {
+      setAdminToken(savedToken);
+    }
+    if (adminToken) {
+      fetchAllOrders();
+    }
+  }, [adminToken]);
+
+  // <------------App functions------------>
+  const logOut = () => {
+    localStorage.removeItem("adminToken");
+    setAdminToken(null);
+    toast.dismiss();
+    toast.success("Successfully Logged Out!!", {
+      id: "logout",
+    });
+  };
+
+  const logIn = async (email, password) => {
+    try {
+      const response = await axios.post(backendUrl + "/api/user/admin", {
+        email,
+        password,
+      });
+
+      console.log(response);
+
+      if (response.data.success) {
+        setAdminToken(response.data.token);
+        localStorage.setItem("adminToken", response.data.token);
+        navigate("/");
+      } else {
+        console.log(response.data.message);
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
 
   const fetchAllOrders = async () => {
     if (!adminToken) return;
@@ -17,9 +64,8 @@ const AdminContextProvider = (props) => {
       const response = await axios.post(
         `${backendUrl}/api/order/list`,
         {},
-        { headers: { adminToken } }
+        { headers: { token: adminToken } }
       );
-
       if (response.data.success) {
         setOrders(response.data.orders.reverse());
       } else {
@@ -33,23 +79,18 @@ const AdminContextProvider = (props) => {
     }
   };
 
-  useEffect(() => {
-    const savedToken = localStorage.getItem("adminToken");
-    if (!adminToken && savedToken) {
-      setAdminToken(savedToken);
-    }
-  }, [adminToken]);
-
-  useEffect(() => {
-    fetchAllOrders();
-  }, [adminToken]);
+  console.log(orders);
 
   const value = {
     backendUrl,
     orders,
     loading,
     adminToken,
+    setAdminToken,
     fetchAllOrders,
+    navigate,
+    logOut,
+    logIn,
   };
 
   return (
