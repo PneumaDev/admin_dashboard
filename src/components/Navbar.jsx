@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Home,
@@ -8,14 +8,16 @@ import {
   Menu,
   X,
   LogOut,
-  ChevronRight,
 } from "lucide-react";
+import { AdminContext } from "../context/AdminContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const { logOut } = useContext(AdminContext);
 
   useEffect(() => {
     const handleResize = () => {
@@ -117,10 +119,7 @@ const Navbar = () => {
         {/* Logout Button */}
         <div className="p-4 border-t border-gray-700">
           <button
-            onClick={() => {
-              alert("Logging out...");
-              if (isMobile) setIsOpen(false);
-            }}
+            onClick={logOut}
             className="flex items-center space-x-3 w-full p-3 text-gray-300 hover:bg-gray-700 rounded-lg transition-all duration-200"
           >
             <LogOut className="w-5 h-5" />

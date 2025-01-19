@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Mail, Lock } from "lucide-react";
 import background from "../images/background.jpg";
+import toast from "react-hot-toast";
+import { AdminContext } from "../context/AdminContext";
+import axios from "axios";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleFormSubmit = (e) => {
+  const { logIn } = useContext(AdminContext);
+
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
 
     // Simple validation
@@ -21,25 +26,27 @@ export default function Login() {
       return;
     }
 
-    // Clear errors and handle successful submission
-    setErrorMessage("");
-    console.log(
-      "Login successful with email:",
-      email,
-      "and password:",
-      password
+    toast.dismiss();
+    toast.promise(
+      logIn(email, password),
+      {
+        loading: "Just a moment",
+        success: "Welcome Admin!",
+        error: (error) => {
+          return error.message;
+        },
+      },
+      { id: "login" }
     );
-
-    // Add further login logic here (e.g., API call)
   };
 
   return (
     <div
-      className="relative flex items-center justify-center min-h-screen bg-cover bg-center animate-fadeInSlow"
+      className="relative flex items-center justify-center min-h-screen bg-cover bg-center"
       style={{ backgroundImage: `url(${background})` }}
     >
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black opacity-70 animate-overlayFadeIn"></div>
+      <div className="absolute inset-0 bg-black opacity-70 "></div>
 
       {/* Login Form Container */}
       <div className="relative z-10 bg-white bg-opacity-95 p-8 m-8 rounded-lg shadow-lg w-full max-w-md animate-slideUp">
@@ -64,7 +71,7 @@ export default function Login() {
             >
               Email Address
             </label>
-            <div className="flex items-center bg-gray-100 rounded-md p-2 focus-within:ring-2 focus-within:ring-blue-500 animate-fadeIn">
+            <div className="flex items-center bg-gray-100 border border-gray-300 rounded-md p-2 focus-within:ring-2 focus-within:ring-blue-500 animate-fadeIn">
               <Mail className="w-5 h-5 text-gray-400" />
               <input
                 type="email"
@@ -75,6 +82,7 @@ export default function Login() {
                 placeholder="Enter your email"
                 className="bg-transparent focus:outline-none ml-2 flex-1 text-sm text-gray-800"
                 required
+                autoComplete="on"
               />
             </div>
           </div>
@@ -87,7 +95,7 @@ export default function Login() {
             >
               Password
             </label>
-            <div className="flex items-center bg-gray-100 rounded-md p-2 focus-within:ring-2 focus-within:ring-blue-500 animate-fadeIn delay-100">
+            <div className="flex items-center bg-gray-100 border border-gray-300 rounded-md p-2 focus-within:ring-2 focus-within:ring-blue-500 animate-fadeIn delay-100">
               <Lock className="w-5 h-5 text-gray-400" />
               <input
                 type="password"
@@ -96,6 +104,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
+                autoComplete="current-password"
                 className="bg-transparent focus:outline-none ml-2 flex-1 text-sm text-gray-800"
                 required
               />
@@ -110,17 +119,6 @@ export default function Login() {
             Login
           </button>
         </form>
-
-        {/* Footer Text */}
-        <div className="mt-6 text-sm text-gray-600 text-center">
-          Don't have an account?{" "}
-          <a
-            href="/register"
-            className="text-blue-600 hover:underline focus:outline-none"
-          >
-            Sign up
-          </a>
-        </div>
       </div>
     </div>
   );
