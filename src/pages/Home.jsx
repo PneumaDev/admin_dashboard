@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { AdminContext } from "../context/AdminContext";
 
 export default function Home() {
-  const { backendUrl } = useContext(AdminContext);
+  const { orders } = useContext(AdminContext);
 
   const stats = [
     {
@@ -175,7 +175,7 @@ export default function Home() {
                 {recentOrders.map((order, index) => (
                   <tr
                     key={index}
-                    className=" m-4 hover:bg-gray-700 transition-colors cursor-pointer"
+                    className="m-4 hover:bg-gray-700 transition-colors cursor-pointer"
                   >
                     <td className="py-4 pl-4 text-gray-200 rounded-l-md">
                       {index + 1}.
