@@ -8,6 +8,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Clock,
+  Eye,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AdminContext } from "../context/AdminContext";
@@ -164,39 +165,59 @@ export default function Home() {
               <thead>
                 <tr className="text-left text-sm justify-between text-gray-400 border-b rounded-b-md border-gray-600">
                   <th className="pb-4 pl-4 md:pr-0 pr-8">SN</th>
-                  <th className="pb-4 md:pr-0 pr-16">Order ID</th>
                   <th className="pb-4 md:pr-0 pr-16">Customer</th>
                   <th className="pb-4 md:pr-0 pr-32">Product</th>
                   <th className="pb-4 md:pr-0 pr-10">Amount</th>
-                  <th className="pb-4 md:pr-0 pr-10">Status</th>
+                  <th className="pb-4 md:pr-0 pr-16">Status</th>
+                  <th className="pb-4 md:pr-0 pr-10">Order ID</th>
                 </tr>
               </thead>
               <tbody className="text-sm">
-                {recentOrders.map((order, index) => (
+                {orders.map((order, index) => (
                   <tr
                     key={index}
-                    className="m-4 hover:bg-gray-700 transition-colors cursor-pointer"
+                    className="m-4 hover:bg-gray-700 hover:shadow-lg transition-all duration-300 cursor-pointer"
                   >
                     <td className="py-4 pl-4 text-gray-200 rounded-l-md">
                       {index + 1}.
                     </td>
-                    <td className="py-4 text-gray-200">{order.id}</td>
 
-                    <td className="py-4 text-gray-200">{order.customer}</td>
-                    <td className="py-4 text-gray-400">{order.product}</td>
-                    <td className="py-4 text-gray-200">{order.amount}</td>
-                    <td className="py-4 rounded-r-md">
+                    <td className="py-4 text-gray-200">
+                      {order.address.firstName} {order.address.lastName}
+                    </td>
+                    <td className="py-4 text-gray-400">
+                      <div className="flex items-center">
+                        <Link
+                          to={`orders/${order._id}`}
+                          className="mr-2 text-white hover:scale-105 transform transition-transform duration-300 flex items-center"
+                        >
+                          <Eye fill="green" className="w-6 mr-2" />
+                          {order.items[0].name}
+                        </Link>
+                      </div>
+                    </td>
+                    <td className="py-4 text-gray-200">Ksh. {order.amount}</td>
+                    <td className="py-4">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          order.status === "Processing"
-                            ? "bg-yellow-100 text-yellow-800"
+                        className={`px-2 py-1 rounded-full text-xs font-medium transition-all duration-300 ${
+                          order.status === "Delivered"
+                            ? "bg-green-200 text-green-900 hover:bg-green-300"
                             : order.status === "Shipped"
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-green-100 text-green-800"
+                            ? "bg-blue-100 text-blue-800 hover:bg-blue-200"
+                            : order.status === "Packing"
+                            ? "bg-orange-100 text-orange-600 hover:bg-orange-200"
+                            : order.status === "Pending"
+                            ? "bg-orange-100 text-orange-800 hover:bg-orange-200"
+                            : order.status === "Confirmed"
+                            ? "bg-teal-100 text-teal-800 hover:bg-teal-200"
+                            : "bg-red-100 text-red-800 hover:bg-red-200"
                         }`}
                       >
                         {order.status}
                       </span>
+                    </td>
+                    <td className="py-4 text-gray-200 rounded-r-md">
+                      {order._id.slice(0, 10)}...
                     </td>
                   </tr>
                 ))}
