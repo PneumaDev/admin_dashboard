@@ -94,10 +94,10 @@ export default function Home() {
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div className="space-y-3">
-          <h2 className="font-yantramanav font-bold text-white">
+          <h2 className="font-yantramanav font-semibold text-white md:text-start text-center text-xl">
             Welcome back, Paul Kamau.
           </h2>
-          <p className="text-gray-300 mt-1 font-muktaVaani">
+          <p className="text-gray-300 mt-1 font-muktaVaani md:text-start text-center text-base">
             Here's what's happening with your store today😊
           </p>
         </div>
