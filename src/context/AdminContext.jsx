@@ -41,8 +41,6 @@ const AdminContextProvider = (props) => {
         password,
       });
 
-      console.log(response);
-
       if (response.data.success) {
         setAdminToken(response.data.token);
         localStorage.setItem("adminToken", response.data.token);
@@ -78,8 +76,6 @@ const AdminContextProvider = (props) => {
       setLoading(false);
     }
   };
-
-  console.log(orders);
 
   const value = {
     backendUrl,
