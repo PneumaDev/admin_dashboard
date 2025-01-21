@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { PackageCheck, Clock, User, Mail, Truck } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { AdminContext } from "../context/AdminContext";
+import OrderItem from "../components/OrderItem";
 
 const Order = () => {
   const [order, setOrder] = useState(null);
@@ -20,12 +21,12 @@ const Order = () => {
         }
       }
       setLoading(false);
-    });
+    }, 500);
 
     return () => clearTimeout(timeout);
   }, [orders, orderId]);
 
-  if (loading) {
+  if (loading && !order) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-500"></div>
@@ -33,13 +34,15 @@ const Order = () => {
     );
   }
 
-  if (!order) {
+  if (!order && !loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <p className="text-white text-lg">Order not found</p>
       </div>
     );
   }
+
+  console.log(orders);
 
   return (
     <div className="py-4 flex justify-center items-center">
@@ -97,8 +100,8 @@ const Order = () => {
                     {order.address.email}
                   </p>
                   <p className="text-sm text-white font-muktaVaani">
-                    <strong className="font-yantramanav">Address:</strong>{" "}
-                    {order.address.street}, {order.address.constituency}
+                    <strong className="font-yantramanav">Tel:</strong>{" "}
+                    {order.address.phone}
                   </p>
                 </div>
               </div>
@@ -144,33 +147,40 @@ const Order = () => {
                   <p className="text-sm text-white">
                     <strong>Price:</strong> Ksh. {order.shippingMethod.price}
                   </p>
+                  <p className="text-sm text-white font-muktaVaani">
+                    <strong className="font-yantramanav">Address:</strong>{" "}
+                    {order.address.street}, {order.address.constituency}
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Order Items */}
-          <div>
-            <h2 className="font-semibold text-white mb-2">Order Items</h2>
-            <ul className="space-y-2">
+          <div className="border-b pb-4 border-gray-700">
+            <h2 className="font-semibold text-white mb-2 text-lg font-muktaVaani">
+              Order Items
+            </h2>
+            <div className="p-4">
               {order.items.map((item, index) => (
-                <li
-                  key={index}
-                  className="p-3 bg-whiteborder rounded-md flex justify-between items-center"
-                >
-                  <span className="text-sm text-white">{item.name}</span>
-                  <span className="text-sm text-white">
-                    Quantity: {item.quantity}
-                  </span>
-                </li>
+                <OrderItem item={item} key={index} />
               ))}
-            </ul>
+            </div>
+          </div>
+
+          {/* Admin Features */}
+          <div className="flex justify-end">
+            <button className="p-2 bg-green-300 rounded-md font-muktaVaani hover:bg-green-400 transition-colors text-sm duration-150">
+              Verify Payment
+            </button>
           </div>
 
           {/* Date Info */}
-          <div className="flex items-center justify-between">
-            <span className="text-white text-sm">Order Date:</span>
-            <span className="text-sm text-white">
+          <div className="flex items-center justify-end">
+            <span className="text-white text-sm font-muktaVaani">
+              Order Date:{" "}
+            </span>
+            <span className="text-sm text-white pl-1 font-yantramanav">
               {new Date(order.date).toLocaleString()}
             </span>
           </div>
