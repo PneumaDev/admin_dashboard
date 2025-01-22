@@ -42,8 +42,6 @@ const Order = () => {
     );
   }
 
-  console.log(orders);
-
   return (
     <div className="py-4 flex justify-center items-center">
       <div className="bg-gray-800 shadow-md rounded-md w-full">
@@ -59,13 +57,13 @@ const Order = () => {
         </div>
         <div className="p-4 space-y-4">
           {/* Order Status */}
-          <div className="border-b pb-4 border-gray-700">
+          <div className="border-b pb-4 border-gray-400">
             <div className="flex items-center gap-x-2 mb-4">
               <span className="font-semibold text-white font-yantramanav">
                 Status:
               </span>
               <span
-                className={`px-2 py-1 rounded-md text-white font-muktaVaani text-sm ${
+                className={`px-2 py-1 rounded-md text-black font-muktaVaani text-sm ${
                   order.status === "Delivered"
                     ? "bg-green-200 text-green-900 hover:bg-green-300"
                     : order.status === "Shipped"
