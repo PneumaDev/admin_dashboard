@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { Cloudinary } from "@cloudinary/url-gen";
 
 export const AdminContext = createContext();
 
@@ -12,6 +13,9 @@ const AdminContextProvider = (props) => {
   const [adminToken, setAdminToken] = useState(null);
   const navigate = useNavigate();
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const cloudinary = new Cloudinary({
+    cloud: { cloudName: "ds5lreojp" },
+  });
 
   // <------------Handle Side Effects------------>
   useEffect(() => {
@@ -40,8 +44,6 @@ const AdminContextProvider = (props) => {
         email,
         password,
       });
-
-      console.log(response);
 
       if (response.data.success) {
         setAdminToken(response.data.token);
@@ -79,8 +81,6 @@ const AdminContextProvider = (props) => {
     }
   };
 
-  console.log(orders);
-
   const value = {
     backendUrl,
     orders,
@@ -91,6 +91,7 @@ const AdminContextProvider = (props) => {
     navigate,
     logOut,
     logIn,
+    cloudinary,
   };
 
   return (

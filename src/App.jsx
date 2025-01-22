@@ -9,6 +9,7 @@ import { Route, Routes } from "react-router-dom";
 import { AdminContext } from "./context/AdminContext";
 import Login from "./pages/Login";
 import { Toaster } from "react-hot-toast";
+import Order from "./pages/Order";
 
 function App() {
   const { adminToken } = useContext(AdminContext);
@@ -69,6 +70,7 @@ function App() {
               <Route path="/products" element={<Products />} />
               <Route path="/orders" element={<Orders />} />
               <Route path="/customers" element={<Customers />} />
+              <Route path="/orders/:orderId" element={<Order />} />
             </Routes>
           </div>
         </div>

@@ -3,7 +3,6 @@ import { Mail, Lock } from "lucide-react";
 import background from "../images/background.jpg";
 import toast from "react-hot-toast";
 import { AdminContext } from "../context/AdminContext";
-import axios from "axios";
 
 export default function Login() {
   const [email, setEmail] = useState("");
