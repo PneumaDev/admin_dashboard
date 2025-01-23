@@ -1,3 +1,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* index.css */
+:root {
+  --bg-color: #fbfcfd;
+  --bg-sidecolor: #e4e6e9;
+  --text-color: #1a202c;
+  --hover-bg: #cbd5e0;
+  --card-bg: #ffffff;
+  --border-color: #a0aec0;
+}
+
+[data-theme="dark"] {
+  --bg-color: #111827;
+  --bg-sidecolor: #1f2937;
+  --text-color: #f3f4f6;
+  --hover-bg: #374151;
+  --card-bg: #1a202c;
+  --border-color: #374151;
+}
+
+/* Define reusable class */
+.transition-standard {
+  @apply transition duration-300 ease-in-out;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}

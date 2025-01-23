@@ -33,5 +33,13 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        ".transition-standard": {
+          transition: "all 0.3s ease-in-out",
+        },
+      });
+    },
+  ],
 };
