@@ -11,6 +11,10 @@ const AdminContextProvider = (props) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [adminToken, setAdminToken] = useState(null);
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("theme") || "light"
+  );
+
   const navigate = useNavigate();
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const cloudinary = new Cloudinary({
@@ -27,6 +31,11 @@ const AdminContextProvider = (props) => {
       fetchAllOrders();
     }
   }, [adminToken]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   // <------------App functions------------>
   const logOut = () => {
@@ -81,6 +90,9 @@ const AdminContextProvider = (props) => {
     }
   };
 
+  const toggleTheme = () =>
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+
   const value = {
     backendUrl,
     orders,
@@ -92,6 +104,8 @@ const AdminContextProvider = (props) => {
     logOut,
     logIn,
     cloudinary,
+    theme,
+    toggleTheme,
   };
 
   return (
