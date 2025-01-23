@@ -233,7 +233,7 @@ export default function Home() {
         {/* Notifications */}
         <div className="bg-[var(--card-bg)] transition-standard rounded-xl p-6 shadow-sm">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="font-yantramanav text-md md:text-lg font-semibold tex-[var(--text-color)] transition-standard">
+            <h3 className="font-yantramanav text-md md:text-lg font-semibold text-[var(--text-color)]">
               Recent Notifications
             </h3>
             <button className="text-blue-400 hover:text-blue-300 text-sm font-medium">
@@ -244,13 +244,13 @@ export default function Home() {
             {notifications.map((notification, index) => (
               <div
                 key={index}
-                className="flex items-start space-x-4 p-4 rounded-lg hover:bg-[var(--hover-bg)] transition-standard transition-colors cursor-pointer"
+                className="flex items-start space-x-4 p-4 rounded-lg hover:bg-[var(--hover-bg)] cursor-pointer"
               >
                 <div className="p-2 bg-gray-700 rounded-lg">
-                  <Bell className="w-5 h-5 text-[var(--bg-color)] transition-standard" />
+                  <Bell className="w-5 h-5 text-[var(--bg-color)] " />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-[var(--text-color)] transition-standard font-yantramanav line-clamp-1">
+                  <p className="text-sm text-[var(--text-color)] font-yantramanav line-clamp-1">
                     {notification.message}
                   </p>
                   <div className="flex items-center mt-1">
