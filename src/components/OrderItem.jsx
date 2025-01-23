@@ -42,7 +42,7 @@ export default function OrderItem({ item }) {
       {/* Product Details */}
       <div className="flex-1 space-y-2">
         {/* Product Name */}
-        <p className="font-medium text-white line-clamp-1 font-muktaVaani">
+        <p className="font-medium text-[var(--text-color)] line-clamp-1 font-muktaVaani">
           {item.name}
         </p>
         {/* Quantity, Size, and Price */}
