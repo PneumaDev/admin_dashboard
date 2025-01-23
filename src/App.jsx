@@ -64,7 +64,7 @@ function App() {
       {localStorage.getItem("adminToken") || adminToken ? (
         <div className="flex h-screen">
           <Navbar />
-          <div className="flex-1 overflow-auto p-2 md:p-6 bg-gray-700">
+          <div className="flex-1 overflow-auto p-2 md:p-6 bg-[var(--bg-sidecolor)] transition-all duration-300 ease-in-out">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/products" element={<Products />} />
