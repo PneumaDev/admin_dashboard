@@ -24,7 +24,7 @@ export default function OrderItem({ item }) {
   }, [item]);
 
   return (
-    <div className="flex items-center space-x-4 py-4 border-b last:border-b-0">
+    <div className="flex items-center space-x-4 py-4 border-b border-gray-700 last:border-b-0">
       {/* Product Image */}
       {processedImages ? (
         <AdvancedImage
