@@ -159,11 +159,11 @@ const Order = () => {
           </div>
 
           {/* Order Items */}
-          <div className="border-b pb-4 border-gray-700">
+          <div className="border-b pb-4 border-gray-400">
             <h2 className="font-semibold text-[var(--text-color)] transition-standard mb-2 text-lg font-muktaVaani">
               Order Items
             </h2>
-            <div className="p-4">
+            <div className="p-4 ">
               {order.items.map((item, index) => (
                 <OrderItem item={item} key={index} />
               ))}
