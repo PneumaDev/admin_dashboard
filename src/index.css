@@ -10,6 +10,7 @@
   --hover-bg: #cbd5e0;
   --card-bg: #ffffff;
   --border-color: #a0aec0;
+  --table-header: #949ca3;
 }
 
 [data-theme="dark"] {
@@ -19,6 +20,7 @@
   --hover-bg: #374151;
   --card-bg: #1a202c;
   --border-color: #374151;
+  --table-header: #45494e;
 }
 
 /* Define reusable class */
