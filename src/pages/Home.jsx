@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import { AdminContext } from "../context/AdminContext";
 
 export default function Home() {
-  const { orders } = useContext(AdminContext);
+  const { orders, navigate } = useContext(AdminContext);
 
   const stats = [
     {
@@ -44,30 +44,6 @@ export default function Home() {
       change: "+8.2%",
       isIncrease: true,
       icon: Package,
-    },
-  ];
-
-  const recentOrders = [
-    {
-      id: "ORD-7842",
-      customer: "John Smith",
-      product: "Nike Air Max 2024",
-      amount: "$299.99",
-      status: "Processing",
-    },
-    {
-      id: "ORD-7841",
-      customer: "Emma Wilson",
-      product: "Wireless Headphones",
-      amount: "$159.99",
-      status: "Shipped",
-    },
-    {
-      id: "ORD-7840",
-      customer: "Michael Brown",
-      product: "Smart Watch Pro",
-      amount: "$249.99",
-      status: "Delivered",
     },
   ];
 
@@ -172,9 +148,12 @@ export default function Home() {
                   <th className="pb-4  pr-10">Order ID</th>
                 </tr>
               </thead>
-              <tbody className="text-sm">
-                {orders.map((order, index) => (
+              <tbody className="text-sm gap-y-10">
+                {orders.slice(0, 5).map((order, index) => (
                   <tr
+                    onClick={() => {
+                      navigate(`/orders/${order._id}`);
+                    }}
                     key={index}
                     className="m-4 pt-4 hover:bg-[var(--hover-bg)] hover:shadow-lg transition-all duration-300 cursor-pointer"
                   >
@@ -186,17 +165,9 @@ export default function Home() {
                       {order.address.firstName} {order.address.lastName}
                     </td>
                     <td className="py-4 text-gray-400">
-                      <div className="flex items-center">
-                        <Link
-                          to={`orders/${order._id}`}
-                          className="mr-2 text-white hover:scale-105 transform transition-transform duration-300 flex items-center"
-                        >
-                          <Eye fill="green" className="w-6 mr-2" />
-                          <span className="text-[var(--text-color)] transition-standard font-muktaVaani">
-                            {order.items[0].name}
-                          </span>
-                        </Link>
-                      </div>
+                      <span className="text-[var(--text-color)] transition-standard font-muktaVaani line-clamp-1">
+                        {order.items[0].name}
+                      </span>
                     </td>
                     <td className="py-4 text-[var(--text-color)] transition-standard font-muktaVaani">
                       Ksh. {order.amount}
