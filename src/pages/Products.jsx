@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Edit, Trash, Plus } from "lucide-react";
+import Modal from "../components/Modal";
+import AddProduct from "./AddProduct";
 
 // Mock product data
 const mockProducts = [
@@ -93,6 +95,7 @@ const mockProducts = [
 export default function ProductsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [openModal, setOpenModal] = useState(false);
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -114,7 +117,10 @@ export default function ProductsPage() {
           <h1 className="text-2xl font-bold text-[var(--text-color)] font-yantramanav">
             Products
           </h1>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 font-imprima">
+          <button
+            onClick={() => setOpenModal(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 font-imprima"
+          >
             <Plus className="w-4 h-4 mr-2" />
             Add Product
           </button>
@@ -259,6 +265,15 @@ export default function ProductsPage() {
             </div>
           </div>
         </div>
+        <Modal
+          isOpen={openModal}
+          onClose={() => setOpenModal(false)}
+          title={"Add Product"}
+          button1={"Add Product"}
+          button2={"Cancel"}
+        >
+          <AddProduct />
+        </Modal>
       </div>
     </div>
   );
