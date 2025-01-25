@@ -92,7 +92,7 @@ const mockProducts = [
 
 export default function ProductsPage() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage] = useState(10);
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -100,9 +100,15 @@ export default function ProductsPage() {
   const currentItems = mockProducts.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(mockProducts.length / itemsPerPage);
 
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
   return (
-    <div className="p-6 bg-[var(--card-bg)]  min-h-screen rounded-lg">
-      <div className=" mx-auto">
+    <div className="p-6 bg-[var(--card-bg)] rounded-lg">
+      <div className="mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-[var(--text-color)] font-yantramanav">
@@ -143,12 +149,12 @@ export default function ProductsPage() {
               <tbody className="bg-[var(--bg-sidecolor)] divide-y divide-[var(--border-color)]">
                 {currentItems.map((product, index) => (
                   <tr
-                    key={product.id}
+                    key={index}
                     className="hover: cursor-pointer hover:bg-[var(--border-color)]"
                   >
                     <td className="px-6 py-4 whitespace-nowrap ">
                       <div className="text-sm font-medium font-muktaVaani text-[var(--text-color)] transition-standard">
-                        {index + 1}.
+                        {indexOfFirstItem + index + 1}.
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -176,10 +182,10 @@ export default function ProductsPage() {
                       {product.category}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button className="text-blue-600 hover:text-blue-900 mr-4">
+                      <button className="text-blue-600 hover:text-blue-500 mr-4">
                         <Edit className="w-5 h-5" />
                       </button>
-                      <button className="text-red-600 hover:text-red-900">
+                      <button className="text-red-600 hover:text-red-500">
                         <Trash className="w-5 h-5" />
                       </button>
                     </td>
@@ -192,53 +198,63 @@ export default function ProductsPage() {
           {/* Pagination */}
           <div className="border-t border-gray-200 bg-[var(--table-header)] px-4 py-3 sm:px-6">
             <div className="flex items-center justify-between">
+              <div className="flex-1 flex items-center justify-between sm:hidden">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md border border-gray-300 bg-white text-black transition-standard hover:bg-gray-50 disabled:opacity-50"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="ml-3 relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md border border-gray-300 bg-white text-black transition-standard hover:bg-gray-50 disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
               <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-sm text-[var(--text-color)] font-yantramanav">
-                    Showing{" "}
-                    <span className="font-medium">{indexOfFirstItem + 1}</span>{" "}
-                    to{" "}
-                    <span className="font-medium">
-                      {Math.min(indexOfLastItem, mockProducts.length)}
-                    </span>{" "}
-                    of{" "}
-                    <span className="font-medium">{mockProducts.length}</span>{" "}
-                    results
-                  </p>
-                </div>
-                <div>
-                  <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-                    <button
-                      onClick={() => setCurrentPage(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-[var(--text-color)] transition-standard hover:bg-gray-50 disabled:opacity-50"
-                    >
-                      <ChevronLeft className="h-5 w-5" />
-                    </button>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                      (page) => (
-                        <button
-                          key={page}
-                          onClick={() => setCurrentPage(page)}
-                          className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                            currentPage === page
-                              ? "bg-blue-50 border-blue-500 text-blue-600"
-                              : "bg-white border-gray-300 text-[var(--text-color)] transition-standard hover:bg-gray-50"
-                          }`}
-                        >
-                          {page}
-                        </button>
-                      )
-                    )}
-                    <button
-                      onClick={() => setCurrentPage(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-[var(--text-color)] transition-standard hover:bg-gray-50 disabled:opacity-50"
-                    >
-                      <ChevronRight className="h-5 w-5" />
-                    </button>
-                  </nav>
-                </div>
+                <p className="text-sm text-[var(--text-color)] font-yantramanav">
+                  Showing{" "}
+                  <span className="font-medium">{indexOfFirstItem + 1}</span> to{" "}
+                  <span className="font-medium">
+                    {Math.min(indexOfLastItem, mockProducts.length)}
+                  </span>{" "}
+                  of <span className="font-medium">{mockProducts.length}</span>{" "}
+                  results
+                </p>
+                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="relative inline-flex items-center text-black px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium transition-standard hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (page) => (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                          currentPage === page
+                            ? "bg-gray-800 border-blue-500 text-white"
+                            : "bg-gray-400 border-gray-300 text-[var(--text-color)] transition-standard hover:text-[var(--bg-color)]"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    )
+                  )}
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-black transition-standard hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </button>
+                </nav>
               </div>
             </div>
           </div>
