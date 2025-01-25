@@ -19,13 +19,13 @@ const Navbar = () => {
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const { logOut, theme, toggleTheme } = useContext(AdminContext);
+  const { logOut, theme, toggleTheme, navigate } = useContext(AdminContext);
 
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth < 1000;
+      const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
-      if (!mobile) setIsOpen(true);
+      // if (!mobile) setIsOpen(true);
     };
 
     window.addEventListener("resize", handleResize);
@@ -36,6 +36,7 @@ const Navbar = () => {
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
+    // setIsCollapsed(!isCollapsed);
   };
 
   const NavItems = [
@@ -63,8 +64,7 @@ const Navbar = () => {
             >
               Eridanus Mall
             </h1>
-            {/* Theme Toggle Button */}
-            <div className="">
+            <div>
               <button
                 onClick={toggleTheme}
                 className="w-full flex items-center justify-center gap-2 p-2 bg-[var(--hover-bg)] rounded-lg transition"
@@ -103,7 +103,7 @@ const Navbar = () => {
                   }`}
                 >
                   <div className="flex items-center space-x-3">
-                    <Icon className="w-5 h-5" />
+                    <Icon className="w-5 h-5 md:w-6 md:h-6" />
                     {!isCollapsed && <span>{label}</span>}
                   </div>
                   {count !== null && !isCollapsed && (
@@ -130,14 +130,31 @@ const Navbar = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 md:p-0 p-6 bg-[var(--bg-color)]">
+      <main className="flex-1 lg:p-0 p-6 bg-[var(--bg-color)]">
         {isMobile && !isOpen && (
-          <button
-            onClick={toggleSidebar}
-            className="absolute top-4 left-2 z-50 p-2 rounded-lg bg-[var(--card-bg)] hover:bg-[var(--hover-bg)] transition"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
+          <div className="flex flex-col space-y-4">
+            {/* Toggle Sidebar Button */}
+            <button
+              onClick={toggleSidebar}
+              className="absolute top-4 left-2 z-50 p-1 rounded-lg bg-[var(--card-bg)] hover:bg-[var(--hover-bg)] transition"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+
+            {/* Dynamic Navigation Buttons */}
+            {NavItems.map(({ icon: Icon, path }, index) => (
+              <button
+                key={path}
+                onClick={() => navigate(path)}
+                className={`absolute left-2 z-50 p-1 rounded-lg bg-[var(--card-bg)] hover:bg-[var(--hover-bg)] transition ${
+                  location.pathname === path ? "bg-[var(--hover-bg)]" : ""
+                }`}
+                style={{ top: `${4 + index * 3}rem` }}
+              >
+                <Icon className="w-5 h-5" />
+              </button>
+            ))}
+          </div>
         )}
       </main>
 
