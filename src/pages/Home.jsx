@@ -8,13 +8,12 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Clock,
-  Eye,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AdminContext } from "../context/AdminContext";
 
 export default function Home() {
-  const { orders, navigate } = useContext(AdminContext);
+  const { orders, navigate, loading } = useContext(AdminContext);
 
   const stats = [
     {
@@ -64,6 +63,16 @@ export default function Home() {
       type: "review",
     },
   ];
+
+  console.log(loading);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="md:p-6 my-10">
