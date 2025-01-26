@@ -9,7 +9,7 @@ export const AdminContext = createContext();
 const AdminContextProvider = (props) => {
   // <------------Constants and States------------>
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [adminToken, setAdminToken] = useState(null);
   const [theme, setTheme] = useState(
     () => localStorage.getItem("theme") || "light"
