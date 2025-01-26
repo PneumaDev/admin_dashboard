@@ -1,7 +1,14 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Edit, Trash, Plus } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Edit,
+  Trash,
+  Plus,
+  Search,
+} from "lucide-react";
 import Modal from "../components/Modal";
-import AddProduct from "./AddProduct";
+import AddProduct from "./../components/AddProduct";
 
 // Mock product data
 const mockProducts = [
@@ -109,21 +116,41 @@ export default function ProductsPage() {
     }
   };
 
+  const columnHeader = {
+    sn: "SN",
+    product: "Product",
+    status: "Status",
+    inventory: "Inventory",
+    category: "Category",
+    actions: "Actions",
+  };
+
   return (
     <div className="p-6 bg-[var(--card-bg)] rounded-lg">
       <div className="mx-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-[var(--text-color)] font-yantramanav">
-            Products
-          </h1>
-          <button
-            onClick={() => setOpenModal(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 font-imprima"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Product
-          </button>
+        <div className="">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold text-[var(--text-color)] font-yantramanav">
+              Products
+            </h1>
+            <div className="flex space-x-4">
+              <button
+                onClick={() => setOpenModal(true)}
+                className="bg-blue-600 text-white px-2 md:px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 font-imprima"
+              >
+                <Search className="w-4 h-4 md:mr-2" />
+                <span className="hidden md:flex">Search Product</span>
+              </button>
+              <button
+                onClick={() => setOpenModal(true)}
+                className="bg-blue-600 text-white px-2 md:px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 font-imprima"
+              >
+                <Plus className="w-4 h-4 md:mr-2" />
+                <span className="hidden md:flex">Add Product</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Products Table */}
@@ -132,24 +159,14 @@ export default function ProductsPage() {
             <table className="w-full">
               <thead className="border-b bg-[var(--table-header)]">
                 <tr>
-                  <th className="px-6 py-3 font-imprima text-left text-xs font-medium text-[var(--text-color)] transition-standard uppercase tracking-wider">
-                    SN
-                  </th>
-                  <th className="px-6 py-3 font-imprima text-left text-xs font-medium text-[var(--text-color)] transition-standard uppercase tracking-wider">
-                    Product
-                  </th>
-                  <th className="px-6 py-3 font-imprima text-left text-xs font-medium text-[var(--text-color)] transition-standard uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 font-imprima text-left text-xs font-medium text-[var(--text-color)] transition-standard uppercase tracking-wider">
-                    Inventory
-                  </th>
-                  <th className="px-6 py-3 font-imprima text-left text-xs font-medium text-[var(--text-color)] transition-standard uppercase tracking-wider">
-                    Category
-                  </th>
-                  <th className="px-6 py-3 font-imprima text-left text-xs font-medium text-[var(--text-color)] transition-standard uppercase tracking-wider">
-                    Actions
-                  </th>
+                  {Object.values(columnHeader).map((header, index) => (
+                    <th
+                      key={index}
+                      className="px-6 py-3 font-imprima text-left text-xs font-medium text-[var(--text-color)] transition-standard uppercase tracking-wider"
+                    >
+                      {header}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody className="bg-[var(--bg-sidecolor)] divide-y divide-[var(--border-color)]">
