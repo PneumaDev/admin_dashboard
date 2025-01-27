@@ -1,20 +1,68 @@
-import React, { useState } from "react";
-import { ColorPicker, useColor } from "react-color-palette";
+import React, { useEffect, useState } from "react";
+import { ColorPicker } from "react-color-palette";
 import "react-color-palette/css";
 import Modal from "./Modal";
 
-export default function AddProduct() {
-  const [color, setColor] = useColor("#561ecb");
+export default function AddProduct({
+  formData,
+  setFormData,
+  color,
+  setColor,
+  setParentModal,
+}) {
+  // <------------Handle states------------>
   const [openModal, setOpenModal] = useState(false);
-  console.log(color);
+  const [sizes, setSizes] = useState(["XS", "S", "M", "L", "XL", "XXL"]);
+
+  // <------------Handle Side Effects------------>
+  useEffect(() => {
+    console.log("Called");
+    if (formData.subcategory === "Shoes") {
+      setSizes(["5", "6", "7", "8", "9", "10", "11", "12"]);
+    } else {
+      setSizes(["XS", "S", "M", "L", "XL", "XXL"]);
+    }
+  }, [formData]);
+
+  useEffect(() => {
+    setFormData((prevData) => ({ ...prevData, color: color.hex }));
+  }, [color]);
+
+  // <------------Component Functions------------>
+  const subcategoryOptions = {
+    Men: ["Topwear", "Bottomwear", "Shoes", "Innerwear", "Accessories"],
+    Women: ["Dresses", "Skirts", "Tops", "Shoes", "Innerwear", "Accessories"],
+    Kids: ["Clothing", "Shoes", "Toys", "Accessories"],
+    Unisex: ["Shoes", "Hats", "Scarves", "Jackets"],
+  };
+
+  const selectedSizes = [];
+
+  const handleChange = (e) => {
+    const { name, files } = e.target;
+
+    if (name === "images") {
+      const selectedFiles = Array.from(files);
+      setFormData((prevState) => ({
+        ...prevState,
+        images: [...prevState.images, ...selectedFiles],
+      }));
+    } else {
+      setFormData({ ...formData, [name]: e.target.value });
+    }
+  };
+
+  const toggleSize = (size) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      sizes: prevData.sizes.includes(size)
+        ? prevData.sizes.filter((s) => s !== size)
+        : [...prevData.sizes, size],
+    }));
+  };
 
   return (
-    <form
-      className="space-y-6 p-6 rounded-xl"
-      onSubmit={(e) => {
-        e.preventDefault();
-      }}
-    >
+    <form className="space-y-6 p-6 rounded-xl">
       <h2 className="text-2xl font-bold text-[var(--text-color)] mb-6 font-muktaVaani">
         Add New Product
       </h2>
@@ -26,13 +74,15 @@ export default function AddProduct() {
             htmlFor="name"
             className="block text-sm font-medium text-[var(--text-color)] font-yantramanav"
           >
-            Name
+            Name:
           </label>
           <input
             placeholder="Enter product name"
             type="text"
             name="name"
             id="name"
+            value={formData.name}
+            onChange={handleChange}
             required
             className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard"
           />
@@ -47,10 +97,12 @@ export default function AddProduct() {
             Price (Ksh.)
           </label>
           <input
-            placeholder="Enter product color"
+            placeholder="Enter product price"
             type="number"
-            name="color"
-            id="color"
+            name="price"
+            id="price"
+            value={formData.price}
+            onChange={handleChange}
             required
             step="0.01"
             className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard"
@@ -63,13 +115,15 @@ export default function AddProduct() {
             htmlFor="quantity"
             className="block text-sm font-medium text-[var(--text-color)] font-yantramanav"
           >
-            Quantity
+            Quantity:
           </label>
           <input
             placeholder="Enter product quantity"
             type="number"
             name="quantity"
             id="quantity"
+            value={formData.quantity}
+            onChange={handleChange}
             required
             className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard"
           />
@@ -81,12 +135,14 @@ export default function AddProduct() {
             htmlFor="category"
             className="block text-sm font-medium text-[var(--text-color)] font-yantramanav"
           >
-            Category
+            Category:
           </label>
           <select
             name="category"
             id="category"
             required
+            value={formData.category}
+            onChange={handleChange}
             className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard"
           >
             <option value="Men" className="bg-[var(--bg-color)]">
@@ -115,73 +171,20 @@ export default function AddProduct() {
           <select
             name="subcategory"
             id="subcategory"
+            value={formData.subcategory}
+            onChange={handleChange}
             required
             className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard"
           >
-            {/* Men */}
-            <option value="Topwear" className="bg-[var(--bg-color)]">
-              Topwear
-            </option>
-            <option value="Bottomwear" className="bg-[var(--bg-color)]">
-              Bottomwear
-            </option>
-            <option value="Shoes" className="bg-[var(--bg-color)]">
-              Shoes
-            </option>
-            <option value="Innerwear" className="bg-[var(--bg-color)]">
-              Innerwear
-            </option>
-            <option value="Accessories" className="bg-[var(--bg-color)]">
-              Accessories
-            </option>
-
-            {/* Women */}
-            <option value="Dresses" className="bg-[var(--bg-color)]">
-              Dresses
-            </option>
-            <option value="Skirts" className="bg-[var(--bg-color)]">
-              Skirts
-            </option>
-            <option value="Tops" className="bg-[var(--bg-color)]">
-              Tops
-            </option>
-            <option value="Shoes" className="bg-[var(--bg-color)]">
-              Shoes
-            </option>
-            <option value="Innerwear" className="bg-[var(--bg-color)]">
-              Innerwear
-            </option>
-            <option value="Accessories" className="bg-[var(--bg-color)]">
-              Accessories
-            </option>
-
-            {/* Kids */}
-            <option value="Clothing" className="bg-[var(--bg-color)]">
-              Clothing
-            </option>
-            <option value="Shoes" className="bg-[var(--bg-color)]">
-              Shoes
-            </option>
-            <option value="Toys" className="bg-[var(--bg-color)]">
-              Toys
-            </option>
-            <option value="Accessories" className="bg-[var(--bg-color)]">
-              Accessories
-            </option>
-
-            {/* Unisex */}
-            <option value="Shoes" className="bg-[var(--bg-color)]">
-              Shoes
-            </option>
-            <option value="Hats" className="bg-[var(--bg-color)]">
-              Hats
-            </option>
-            <option value="Scarves" className="bg-[var(--bg-color)]">
-              Scarves
-            </option>
-            <option value="Jackets" className="bg-[var(--bg-color)]">
-              Jackets
-            </option>
+            {subcategoryOptions[formData.category].map((subcategory) => (
+              <option
+                key={subcategory}
+                value={subcategory}
+                className="bg-[var(--bg-color)]"
+              >
+                {subcategory}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -201,6 +204,7 @@ export default function AddProduct() {
                 name="color"
                 id="color"
                 value={color.hex}
+                readOnly
                 required
                 className="w-full px-4 py-2.5 pr-14 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard"
               />
@@ -240,6 +244,8 @@ export default function AddProduct() {
             Description
           </label>
           <textarea
+            onChange={handleChange}
+            value={formData.description}
             placeholder="Enter product description"
             name="description"
             id="description"
@@ -252,15 +258,16 @@ export default function AddProduct() {
         {/* Image Upload Field */}
         <div className="space-y-2 md:col-span-2">
           <label
-            htmlFor="image"
+            htmlFor="images"
             className="block text-sm font-medium text-[var(--text-color)] font-yantramanav"
           >
             Upload Image or Use Camera
           </label>
           <input
             type="file"
-            name="image"
-            id="image"
+            name="images"
+            id="images"
+            onChange={handleChange}
             accept="image/*"
             capture="environment"
             multiple
@@ -268,9 +275,40 @@ export default function AddProduct() {
             className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard placeholder-[var(--border-color)]"
           />
           <p className="text-xs text-gray-500">
-            You can upload files or use your camera to capture an image.
-            (Accepted formats: JPG, PNG, GIF)
+            You can upload files or use your camera to capture images. (Accepted
+            formats: JPG, PNG, GIF)
           </p>
+        </div>
+
+        <div className="space-y-2">
+          <label
+            htmlFor="sizes"
+            className="block text-sm font-medium text-[var(--text-color)]"
+          >
+            Sizes
+          </label>
+          <div className="flex gap-2 flex-wrap">
+            {sizes.map((size) => (
+              <button
+                key={size}
+                type="button"
+                onClick={() => toggleSize(size)}
+                className={`w-12 h-12 flex items-center justify-center font-medium border rounded-md cursor-pointer ${
+                  formData.sizes.includes(size)
+                    ? "bg-blue-500 text-white border-blue-500"
+                    : "bg-transparent text-[var(--text-color)] border-[var(--border-color)]"
+                } transition duration-200`}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+          <input
+            type="hidden"
+            name="sizes"
+            value={selectedSizes.join(",")}
+            id="sizes"
+          />
         </div>
 
         {/* Tags Field */}
@@ -285,7 +323,6 @@ export default function AddProduct() {
             type="text"
             name="tags"
             id="tags"
-            required
             placeholder="Comma-separated tags"
             className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard placeholder-[var(--border-color)]"
           />
@@ -305,10 +342,29 @@ export default function AddProduct() {
             required
             className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard"
           >
-            <option value="true">Yes</option>
-            <option value="false">No</option>
+            {["Yes", "No"].map((option) => (
+              <option value="true" className="bg-[var(--bg-color)]">
+                {option}
+              </option>
+            ))}
           </select>
         </div>
+      </div>
+
+      <div className="flex justify-end pt-4 space-x-3">
+        <button
+          onClick={() => setParentModal(false)}
+          className="bg-red-500 text-white px-5 py-2 font-muktaVaani rounded-md hover:bg-red-600 transition duration-200"
+        >
+          Close
+        </button>
+
+        <button
+          type="submit"
+          className="bg-green-600 text-white px-5 py-2 rounded-md font-muktaVaani hover:bg-green-700 transition duration-200"
+        >
+          Add Product
+        </button>
       </div>
     </form>
   );
