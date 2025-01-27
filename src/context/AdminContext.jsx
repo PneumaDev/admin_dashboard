@@ -12,7 +12,7 @@ const AdminContextProvider = (props) => {
   const [loading, setLoading] = useState(true);
   const [adminToken, setAdminToken] = useState(null);
   const [theme, setTheme] = useState(
-    () => localStorage.getItem("theme") || "light"
+    () => localStorage.getItem("theme") || "dark"
   );
 
   const navigate = useNavigate();
