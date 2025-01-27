@@ -10,6 +10,7 @@ export default function AddProduct({
   color,
   setColor,
   setParentModal,
+  onSubmitHandler,
 }) {
   // <------------Handle states------------>
   const [openModal, setOpenModal] = useState(false);
@@ -62,8 +63,13 @@ export default function AddProduct({
     }));
   };
 
+  const handlesSubmit = (e) => {
+    e.preventDefault();
+    onSubmitHandler();
+  };
+
   return (
-    <form className="space-y-6 p-6 rounded-xl">
+    <form className="space-y-6 p-6 rounded-xl" onSubmit={handlesSubmit}>
       <h2 className="text-2xl font-bold text-[var(--text-color)] mb-6 font-muktaVaani">
         Add New Product
       </h2>
@@ -103,7 +109,11 @@ export default function AddProduct({
             className={inputClass}
           >
             {["Men", "Women", "Kids", "Unisex"].map((category) => (
-              <option value="Men" className="bg-[var(--bg-color)]">
+              <option
+                value="Men"
+                key={category}
+                className="bg-[var(--bg-color)]"
+              >
                 {category}
               </option>
             ))}
@@ -180,7 +190,7 @@ export default function AddProduct({
         </div>
 
         {/* Description Field */}
-        <div className="space-y-2 md:col-span-2">
+        <div className="space-y-2 md:col-span-3">
           <label htmlFor="description" className={labelClass}>
             Description
           </label>
@@ -266,13 +276,18 @@ export default function AddProduct({
             Original Product
           </label>
           <select
+            onChange={handleChange}
             name="isOriginal"
             id="isOriginal"
             required
             className={inputClass}
           >
             {["Yes", "No"].map((option) => (
-              <option value="true" className="bg-[var(--bg-color)]">
+              <option
+                value={option === "Yes" ? true : false}
+                className="bg-[var(--bg-color)]"
+                key={option}
+              >
                 {option}
               </option>
             ))}
