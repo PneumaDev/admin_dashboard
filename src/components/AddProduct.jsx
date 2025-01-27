@@ -223,6 +223,7 @@ export default function AddProduct() {
                 isOpen={openModal}
                 title={"Pick a color"}
                 button1={"Set"}
+                cancelButton={false}
               >
                 <ColorPicker color={color} onChange={setColor} />
               </Modal>
