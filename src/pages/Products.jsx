@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import Modal from "../components/Modal";
 import AddProduct from "./../components/AddProduct";
+import { useColor } from "react-color-palette";
+import "react-color-palette/css";
 
 // Mock product data
 const mockProducts = [
@@ -103,6 +105,20 @@ export default function ProductsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [openModal, setOpenModal] = useState(false);
+  const [color, setColor] = useColor("#ffffff");
+  const [formData, setFormData] = useState({
+    name: "",
+    price: "",
+    quantity: "",
+    category: "Men",
+    subcategory: "Topwear",
+    description: "",
+    sizes: [],
+    tags: "",
+    color: color.hex,
+    isOriginal: "true",
+    images: [],
+  });
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -114,6 +130,10 @@ export default function ProductsPage() {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
+  };
+
+  const onSubmit = async () => {
+    console.log(formData);
   };
 
   const columnHeader = {
@@ -286,10 +306,15 @@ export default function ProductsPage() {
           isOpen={openModal}
           onClose={() => setOpenModal(false)}
           title={"Add Product"}
-          button1={"Add Product"}
-          button2={"Cancel"}
         >
-          <AddProduct />
+          <AddProduct
+            formData={formData}
+            setFormData={setFormData}
+            color={color}
+            setColor={setColor}
+            onSubmitHandler={onSubmit}
+            setParentModal={setOpenModal}
+          />
         </Modal>
       </div>
     </div>
