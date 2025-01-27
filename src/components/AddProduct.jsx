@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ColorPicker } from "react-color-palette";
 import "react-color-palette/css";
 import Modal from "./Modal";
+import { fields, inputClass, labelClass } from "../assets/assets";
 
 export default function AddProduct({
   formData,
@@ -69,72 +70,28 @@ export default function AddProduct({
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Name Field */}
-        <div className="space-y-2">
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-[var(--text-color)] font-yantramanav"
-          >
-            Name:
-          </label>
-          <input
-            placeholder="Enter product name"
-            type="text"
-            name="name"
-            id="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard"
-          />
-        </div>
-
-        {/* Price Field */}
-        <div className="space-y-2">
-          <label
-            htmlFor="color"
-            className="block text-sm font-medium text-[var(--text-color)] font-yantramanav"
-          >
-            Price (Ksh.)
-          </label>
-          <input
-            placeholder="Enter product price"
-            type="number"
-            name="price"
-            id="price"
-            value={formData.price}
-            onChange={handleChange}
-            required
-            step="0.01"
-            className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard"
-          />
-        </div>
-
-        {/* Quantity Field */}
-        <div className="space-y-2">
-          <label
-            htmlFor="quantity"
-            className="block text-sm font-medium text-[var(--text-color)] font-yantramanav"
-          >
-            Quantity:
-          </label>
-          <input
-            placeholder="Enter product quantity"
-            type="number"
-            name="quantity"
-            id="quantity"
-            value={formData.quantity}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard"
-          />
-        </div>
+        {fields.map(({ label, placeholder, type, name, id, step }) => (
+          <div className="space-y-2" key={id}>
+            <label htmlFor={id} className={labelClass}>
+              {label}
+            </label>
+            <input
+              placeholder={placeholder}
+              type={type}
+              name={name}
+              id={id}
+              value={formData[name]}
+              onChange={handleChange}
+              required
+              step={step}
+              className={inputClass}
+            />
+          </div>
+        ))}
 
         {/* Category Field */}
         <div className="space-y-2">
-          <label
-            htmlFor="category"
-            className="block text-sm font-medium text-[var(--text-color)] font-yantramanav"
-          >
+          <label htmlFor="category" className={labelClass}>
             Category:
           </label>
           <select
@@ -143,29 +100,19 @@ export default function AddProduct({
             required
             value={formData.category}
             onChange={handleChange}
-            className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard"
+            className={inputClass}
           >
-            <option value="Men" className="bg-[var(--bg-color)]">
-              Men
-            </option>
-            <option value="Women" className="bg-[var(--bg-color)]">
-              Women
-            </option>
-            <option value="Kids" className="bg-[var(--bg-color)]">
-              Kids
-            </option>
-            <option value="Unisex" className="bg-[var(--bg-color)]">
-              Unisex
-            </option>
+            {["Men", "Women", "Kids", "Unisex"].map((category) => (
+              <option value="Men" className="bg-[var(--bg-color)]">
+                {category}
+              </option>
+            ))}
           </select>
         </div>
 
         {/* Subcategory Field */}
         <div className="space-y-2">
-          <label
-            htmlFor="subcategory"
-            className="block text-sm font-medium text-[var(--text-color)] font-yantramanav"
-          >
+          <label htmlFor="subcategory" className={labelClass}>
             Subcategory
           </label>
           <select
@@ -174,7 +121,7 @@ export default function AddProduct({
             value={formData.subcategory}
             onChange={handleChange}
             required
-            className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard"
+            className={inputClass}
           >
             {subcategoryOptions[formData.category].map((subcategory) => (
               <option
@@ -191,10 +138,7 @@ export default function AddProduct({
         {/* Color Field */}
         <div className="flex items-center">
           <div className="space-y-2 w-full">
-            <label
-              htmlFor="color"
-              className="block text-sm font-medium text-[var(--text-color)] font-yantramanav"
-            >
+            <label htmlFor="color" className={labelClass}>
               Color:
             </label>
             <div className="relative">
@@ -237,10 +181,7 @@ export default function AddProduct({
 
         {/* Description Field */}
         <div className="space-y-2 md:col-span-2">
-          <label
-            htmlFor="description"
-            className="block text-sm font-medium text-[var(--text-color)] font-yantramanav"
-          >
+          <label htmlFor="description" className={labelClass}>
             Description
           </label>
           <textarea
@@ -251,16 +192,13 @@ export default function AddProduct({
             id="description"
             rows="4"
             required
-            className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard"
+            className={inputClass}
           />
         </div>
 
         {/* Image Upload Field */}
         <div className="space-y-2 md:col-span-2">
-          <label
-            htmlFor="images"
-            className="block text-sm font-medium text-[var(--text-color)] font-yantramanav"
-          >
+          <label htmlFor="images" className={labelClass}>
             Upload Image or Use Camera
           </label>
           <input
@@ -281,10 +219,7 @@ export default function AddProduct({
         </div>
 
         <div className="space-y-2">
-          <label
-            htmlFor="sizes"
-            className="block text-sm font-medium text-[var(--text-color)]"
-          >
+          <label htmlFor="sizes" className={labelClass}>
             Sizes
           </label>
           <div className="flex gap-2 flex-wrap">
@@ -313,10 +248,7 @@ export default function AddProduct({
 
         {/* Tags Field */}
         <div className="space-y-2">
-          <label
-            htmlFor="tags"
-            className="block text-sm font-medium text-[var(--text-color)]"
-          >
+          <label htmlFor="tags" className={labelClass}>
             Tags
           </label>
           <input
@@ -330,17 +262,14 @@ export default function AddProduct({
 
         {/* Originality Field */}
         <div className="space-y-2">
-          <label
-            htmlFor="isOriginal"
-            className="block text-sm font-medium text-[var(--text-color)] font-yantramanav"
-          >
+          <label htmlFor="isOriginal" className={labelClass}>
             Original Product
           </label>
           <select
             name="isOriginal"
             id="isOriginal"
             required
-            className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard"
+            className={inputClass}
           >
             {["Yes", "No"].map((option) => (
               <option value="true" className="bg-[var(--bg-color)]">
