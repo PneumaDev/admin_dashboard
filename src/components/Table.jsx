@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 export default function Table({ columnHeader, products, renderRow }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(15);
+  const [itemsPerPage] = useState(12);
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
