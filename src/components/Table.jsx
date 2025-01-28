@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 export default function Table({ columnHeader, products, renderRow }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(15);
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -19,7 +19,7 @@ export default function Table({ columnHeader, products, renderRow }) {
 
   return (
     <div className="rounded-lg shadow overflow-hidden">
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto overflow-y-auto max-h-[80vh] md:max-h-[63vh]">
         <table className="w-full">
           <thead className="border-b bg-[var(--table-header)]">
             <tr>
