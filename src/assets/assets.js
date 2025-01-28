@@ -111,6 +111,67 @@ const mockProducts = [
         inventory: 0,
         category: "Electronics",
     },
+    {
+        id: 1,
+        name: "Wireless Headphones",
+        status: "In Stock",
+        inventory: 45,
+        category: "Electronics",
+    },
+    {
+        id: 2,
+        name: "Running Shoes",
+        status: "Low Stock",
+        inventory: 5,
+        category: "Apparel",
+    },
+    {
+        id: 3,
+        name: "Smart Watch",
+        status: "Out of Stock",
+        inventory: 0,
+        category: "Electronics",
+    }, {
+        id: 1,
+        name: "Wireless Headphones",
+        status: "In Stock",
+        inventory: 45,
+        category: "Electronics",
+    },
+    {
+        id: 2,
+        name: "Running Shoes",
+        status: "Low Stock",
+        inventory: 5,
+        category: "Apparel",
+    },
+    {
+        id: 3,
+        name: "Smart Watch",
+        status: "Out of Stock",
+        inventory: 0,
+        category: "Electronics",
+    }, {
+        id: 1,
+        name: "Wireless Headphones",
+        status: "In Stock",
+        inventory: 45,
+        category: "Electronics",
+    },
+    {
+        id: 2,
+        name: "Running Shoes",
+        status: "Low Stock",
+        inventory: 5,
+        category: "Apparel",
+    },
+    {
+        id: 3,
+        name: "Smart Watch",
+        status: "Out of Stock",
+        inventory: 0,
+        category: "Electronics",
+    },
     // ... add more mock data
 ];
 
