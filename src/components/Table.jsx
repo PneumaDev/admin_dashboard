@@ -34,7 +34,9 @@ export default function Table({ columnHeader, products, renderRow }) {
             </tr>
           </thead>
           <tbody className="bg-[var(--bg-sidecolor)] divide-y divide-[var(--border-color)]">
-            {currentItems.map(renderRow)}
+            {currentItems.map((item, index) =>
+              renderRow(item, indexOfFirstItem + index)
+            )}
           </tbody>
         </table>
       </div>
