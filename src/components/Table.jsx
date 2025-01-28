@@ -19,7 +19,7 @@ export default function Table({ columnHeader, products, renderRow }) {
 
   return (
     <div className="rounded-lg shadow overflow-hidden">
-      <div className="overflow-x-auto overflow-y-auto max-h-[80vh] md:max-h-[63vh]">
+      <div className="overflow-x-auto">
         <table className="w-full">
           <thead className="border-b bg-[var(--table-header)]">
             <tr>
