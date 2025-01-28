@@ -29,6 +29,7 @@ export default function ProductsPage() {
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
   const onSubmit = async () => {
     console.log(formData);
   };
@@ -81,7 +82,7 @@ export default function ProductsPage() {
             >
               <td className="px-6 py-4 whitespace-nowrap ">
                 <div className="text-sm font-medium font-muktaVaani text-[var(--text-color)] transition-standard">
-                  {indexOfFirstItem + index + 1}.
+                  {index + 1}.
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
@@ -119,6 +120,7 @@ export default function ProductsPage() {
             </tr>
           )}
         />
+
         <Modal
           isOpen={openModal}
           onClose={() => setOpenModal(false)}
