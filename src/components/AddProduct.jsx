@@ -3,6 +3,7 @@ import { ColorPicker } from "react-color-palette";
 import "react-color-palette/css";
 import Modal from "./Modal";
 import { fields, inputClass, labelClass } from "../assets/assets";
+import { ImagePlus, X } from "lucide-react";
 
 export default function AddProduct({
   formData,
@@ -11,6 +12,7 @@ export default function AddProduct({
   setColor,
   setParentModal,
   onSubmitHandler,
+  loading,
 }) {
   // <------------Handle states------------>
   const [openModal, setOpenModal] = useState(false);
@@ -18,8 +20,7 @@ export default function AddProduct({
 
   // <------------Handle Side Effects------------>
   useEffect(() => {
-    console.log("Called");
-    if (formData.subcategory === "Shoes") {
+    if (formData.subCategory === "Shoes") {
       setSizes(["5", "6", "7", "8", "9", "10", "11", "12"]);
     } else {
       setSizes(["XS", "S", "M", "L", "XL", "XXL"]);
@@ -43,18 +44,34 @@ export default function AddProduct({
   const handleChange = (e) => {
     const { name, files } = e.target;
 
-    if (name === "images") {
+    if (name === "image") {
       const selectedFiles = Array.from(files);
+
+      setFormData((prevState) => {
+        // Combine previous + newly selected images
+        const allImages = [...prevState.image, ...selectedFiles];
+
+        // Remove duplicates (check by file name)
+        const uniqueImages = Array.from(
+          new Map(allImages.map((file) => [file.name, file])).values()
+        );
+
+        // Limit to max 4 images
+        return {
+          ...prevState,
+          image: uniqueImages.slice(0, 4),
+        };
+      });
+    } else {
       setFormData((prevState) => ({
         ...prevState,
-        images: [...prevState.images, ...selectedFiles],
+        [name]: e.target.value,
       }));
-    } else {
-      setFormData({ ...formData, [name]: e.target.value });
     }
   };
 
   const toggleSize = (size) => {
+    if (loading) return;
     setFormData((prevData) => ({
       ...prevData,
       sizes: prevData.sizes.includes(size)
@@ -66,6 +83,14 @@ export default function AddProduct({
   const handlesSubmit = (e) => {
     e.preventDefault();
     onSubmitHandler();
+  };
+
+  // Remove an Image
+  const removeImage = (index) => {
+    setFormData({
+      ...formData,
+      image: formData.image.filter((_, i) => i !== index),
+    });
   };
 
   return (
@@ -89,8 +114,11 @@ export default function AddProduct({
               value={formData[name]}
               onChange={handleChange}
               required
+              disabled={loading}
               step={step}
-              className={inputClass}
+              className={`${inputClass} ${
+                loading ? "cursor-not-allowed bg-gray-500" : ""
+              }`}
             />
           </div>
         ))}
@@ -104,9 +132,12 @@ export default function AddProduct({
             name="category"
             id="category"
             required
+            disabled={loading}
             value={formData.category}
             onChange={handleChange}
-            className={inputClass}
+            className={`${inputClass} ${
+              loading ? "cursor-not-allowed bg-gray-500" : ""
+            }`}
           >
             {["Men", "Women", "Kids", "Unisex"].map((category) => (
               <option
@@ -126,12 +157,15 @@ export default function AddProduct({
             Subcategory
           </label>
           <select
-            name="subcategory"
-            id="subcategory"
-            value={formData.subcategory}
+            name="subCategory"
+            id="subCategory"
+            value={formData.subCategory}
             onChange={handleChange}
             required
-            className={inputClass}
+            disabled={loading}
+            className={`${inputClass} ${
+              loading ? "cursor-not-allowed bg-gray-500" : ""
+            }`}
           >
             {subcategoryOptions[formData.category].map((subcategory) => (
               <option
@@ -140,6 +174,51 @@ export default function AddProduct({
                 className="bg-[var(--bg-color)]"
               >
                 {subcategory}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Tags Field */}
+        <div className="space-y-2">
+          <label htmlFor="tags" className={labelClass}>
+            Tags
+          </label>
+          <input
+            disabled={loading}
+            type="text"
+            name="tags"
+            onChange={handleChange}
+            id="tags"
+            placeholder="Comma-separated tags"
+            className={`${inputClass} ${
+              loading ? "cursor-not-allowed bg-gray-500" : ""
+            }`}
+          />
+        </div>
+
+        {/* Originality Field */}
+        <div className="space-y-2">
+          <label htmlFor="isOriginal" className={labelClass}>
+            Original Product
+          </label>
+          <select
+            onChange={handleChange}
+            name="isOriginal"
+            id="isOriginal"
+            required
+            disabled={loading}
+            className={`${inputClass} ${
+              loading ? "cursor-not-allowed bg-gray-500" : ""
+            }`}
+          >
+            {["Yes", "No"].map((option) => (
+              <option
+                value={option === "Yes" ? true : false}
+                className="bg-[var(--bg-color)]"
+                key={option}
+              >
+                {option}
               </option>
             ))}
           </select>
@@ -160,20 +239,25 @@ export default function AddProduct({
                 value={color.hex}
                 readOnly
                 required
-                className="w-full px-4 py-2.5 pr-14 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard"
+                disabled={loading}
+                className={`${inputClass} ${
+                  loading ? "cursor-not-allowed bg-gray-500" : ""
+                }`}
               />
               <div
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-md cursor-pointer border border-gray-300"
+                className={`absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-md cursor-pointer border border-gray-300 ${
+                  loading ? "cursor-not-allowed" : ""
+                }`}
                 style={{
                   background:
                     "linear-gradient(90deg, #ff0000, #00ff00, #0000ff, #ffff00)",
                 }}
-                onClick={() => setOpenModal(true)}
+                onClick={() => !loading && setOpenModal(true)}
               ></div>
               <div
                 className="absolute right-12 top-1/2 transform -translate-y-1/2 w-4 h-4 rounded-md cursor-pointer border border-gray-300"
                 style={{ backgroundColor: color.hex }}
-                onClick={() => setOpenModal(true)}
+                onClick={() => !loading && setOpenModal(true)}
               ></div>
 
               <Modal
@@ -202,32 +286,79 @@ export default function AddProduct({
             id="description"
             rows="4"
             required
-            className={inputClass}
+            disabled={loading}
+            className={`${inputClass} ${
+              loading ? "cursor-not-allowed bg-gray-500" : ""
+            }`}
           />
         </div>
 
         {/* Image Upload Field */}
-        <div className="space-y-2 md:col-span-2">
-          <label htmlFor="images" className={labelClass}>
-            Upload Image or Use Camera
-          </label>
-          <input
-            type="file"
-            name="images"
-            id="images"
-            onChange={handleChange}
-            accept="image/*"
-            capture="environment"
-            multiple
-            required
-            className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard placeholder-[var(--border-color)]"
-          />
-          <p className="text-xs text-gray-500">
-            You can upload files or use your camera to capture images. (Accepted
-            formats: JPG, PNG, GIF)
-          </p>
+        <div className="space-y-4 md:border-r pr-4 border-gray-700">
+          {/* Upload Label */}
+          <div className="space-y-2">
+            <label
+              htmlFor="image-upload"
+              className="font-medium text-(var(--text-color))"
+            >
+              Upload Image or Use Camera
+            </label>
+            <input
+              name="image"
+              type="file"
+              id="image-upload"
+              accept="image/*"
+              capture="environment"
+              multiple
+              onChange={handleChange}
+              className="hidden"
+              disabled={loading}
+            />
+            <label
+              htmlFor="image-upload"
+              className={`cursor-pointer flex items-center gap-2 text-(var(--text-color)) bg-[var(--border-color)] font-muktaVaani w-fit px-2 rounded-lg py-2 ${
+                loading ? "cursor-not-allowed bg-gray-500" : ""
+              }`}
+            >
+              <ImagePlus size={20} />
+              Choose Images
+            </label>
+            <p className="text-xs text-gray-500">
+              You can upload up to 4 images. (JPG, PNG, GIF)
+            </p>
+          </div>
+
+          {/* Image Preview Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[...Array(4)].map((_, index) => (
+              <div
+                key={index}
+                className="relative w-full h-32 md:h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden"
+              >
+                {formData.image[index] ? (
+                  <>
+                    <img
+                      src={URL.createObjectURL(formData.image[index])}
+                      alt={`Preview ${index + 1}`}
+                      className="w-full h-full object-cover aspect-auto"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute top-1 right-1 bg-gray-800 text-white rounded-full p-1"
+                    >
+                      <X size={16} />
+                    </button>
+                  </>
+                ) : (
+                  <ImagePlus size={30} className="text-gray-400" />
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
+        {/* Sizes Input */}
         <div className="space-y-2">
           <label htmlFor="sizes" className={labelClass}>
             Sizes
@@ -254,44 +385,6 @@ export default function AddProduct({
             value={selectedSizes.join(",")}
             id="sizes"
           />
-        </div>
-
-        {/* Tags Field */}
-        <div className="space-y-2">
-          <label htmlFor="tags" className={labelClass}>
-            Tags
-          </label>
-          <input
-            type="text"
-            name="tags"
-            id="tags"
-            placeholder="Comma-separated tags"
-            className="w-full px-4 py-2.5 font-imprima rounded-lg border border-[var(--border-color)] bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-standard placeholder-[var(--border-color)]"
-          />
-        </div>
-
-        {/* Originality Field */}
-        <div className="space-y-2">
-          <label htmlFor="isOriginal" className={labelClass}>
-            Original Product
-          </label>
-          <select
-            onChange={handleChange}
-            name="isOriginal"
-            id="isOriginal"
-            required
-            className={inputClass}
-          >
-            {["Yes", "No"].map((option) => (
-              <option
-                value={option === "Yes" ? true : false}
-                className="bg-[var(--bg-color)]"
-                key={option}
-              >
-                {option}
-              </option>
-            ))}
-          </select>
         </div>
       </div>
 
