@@ -1,42 +1,88 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Edit, Trash, Plus, Search } from "lucide-react";
 import Modal from "../components/Modal";
 import AddProduct from "./../components/AddProduct";
 import { useColor } from "react-color-palette";
 import "react-color-palette/css";
-import { mockProducts } from "../assets/assets";
+import { generateSKU, logFormData, mockProducts } from "../assets/assets";
 import Table from "../components/Table";
+import { AdminContext } from "../context/AdminContext";
+import axios from "axios";
 
 export default function ProductsPage() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [color, setColor] = useColor("#ffffff");
   const [formData, setFormData] = useState({
     name: "",
+    discount: "",
     price: "",
     quantity: "",
     category: "Men",
-    subcategory: "Topwear",
+    subCategory: "Topwear",
     description: "",
     sizes: [],
     tags: "",
     color: color.hex,
     isOriginal: "true",
-    images: [],
+    image: [],
   });
 
-  // Pagination logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const { backendUrl, adminToken } = useContext(AdminContext);
 
   const onSubmit = async () => {
-    console.log(formData);
+    setLoading(true);
+    const form = new FormData();
+    form.append("name", formData.name);
+    form.append("description", formData.description);
+    form.append("quantity", formData.quantity);
+    form.append("price", formData.price);
+    form.append("category", formData.category);
+    form.append("subCategory", formData.subCategory);
+    form.append("bestSeller", formData.bestSeller);
+    form.append("sizes", JSON.stringify(formData.sizes));
+    form.append("sku", generateSKU());
+    form.append("brand", formData.brand);
+    form.append("tags", JSON.stringify(formData.tags.split(",")));
+    form.append("discount", formData.discount);
+    form.append("isOriginal", formData.isOriginal);
+
+    console.log(`Processing formData: ${formData.name}`);
+    console.log(`Product images:`, formData.image);
+    // Create an array of promises for image fetches
+    const imagePromises = formData.image.map((img, index) => {
+      console.log(`Appending file directly: ${img.name}`);
+      form.append(`image${index + 1}`, img);
+      return Promise.resolve();
+    });
+
+    // Wait for all images to be processed before continuing
+    await Promise.all(imagePromises);
+
+    logFormData(form);
+
+    try {
+      const response = await axios.post(backendUrl + "/api/product/add", form, {
+        headers: { token: adminToken },
+      });
+
+      console.log(response);
+
+      if (!response.data.success) {
+        throw new Error(
+          `Failed to add product ${formData.name}: ${response.data.message}`
+        );
+      }
+
+      console.log(`Successfully added product: ${formData.name}`);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   const columnHeader = {
     sn: "SN",
-    product: "Product",
+    formData: "Product",
     status: "Status",
     inventory: "Inventory",
     category: "Category",
@@ -75,7 +121,7 @@ export default function ProductsPage() {
         <Table
           columnHeader={columnHeader}
           products={mockProducts}
-          renderRow={(product, index) => (
+          renderRow={(formData, index) => (
             <tr
               key={index}
               className="hover: cursor-pointer hover:bg-[var(--border-color)]"
@@ -87,27 +133,27 @@ export default function ProductsPage() {
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm font-medium font-muktaVaani text-[var(--text-color)] transition-standard">
-                  {product.name}
+                  {formData.name}
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span
                   className={`px-2 inline-flex text-xs font-muktaVaani leading-5 font-semibold rounded-full ${
-                    product.status === "In Stock"
+                    formData.status === "In Stock"
                       ? "bg-green-100 text-green-800"
-                      : product.status === "Low Stock"
+                      : formData.status === "Low Stock"
                       ? "bg-yellow-100 text-yellow-800"
                       : "bg-red-100 text-red-800"
                   }`}
                 >
-                  {product.status}
+                  {formData.status}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap font-muktaVaani text-sm text-[var(--text-color)] transition-standard">
-                {product.inventory}
+                {formData.inventory}
               </td>
               <td className="px-6 py-4 whitespace-nowrap font-muktaVaani text-sm text-[var(--text-color)] transition-standard">
-                {product.category}
+                {formData.category}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <button className="text-blue-600 hover:text-blue-500 mr-4">
@@ -133,6 +179,7 @@ export default function ProductsPage() {
             setColor={setColor}
             onSubmitHandler={onSubmit}
             setParentModal={setOpenModal}
+            loading={loading}
           />
         </Modal>
       </div>
