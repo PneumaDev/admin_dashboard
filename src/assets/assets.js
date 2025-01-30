@@ -16,6 +16,14 @@ export const fields = [
         step: "1",
     },
     {
+        label: "Discount Price (Ksh):",
+        placeholder: "Enter product discount price",
+        type: "number",
+        name: "discount",
+        id: "discount",
+        step: "1",
+    },
+    {
         label: "Quantity:",
         placeholder: "Enter product quantity",
         type: "number",
@@ -23,6 +31,7 @@ export const fields = [
         id: "quantity",
         step: undefined,
     },
+
 ];
 
 // Mock product data
