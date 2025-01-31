@@ -6,6 +6,7 @@ import Table from "../components/Table";
 
 export default function Orders() {
   const [openModal, setOpenModal] = useState(false);
+  const [action, setAction] = useState(null);
 
   const { orders, loading, navigate } = useContext(AdminContext);
 
@@ -15,7 +16,6 @@ export default function Orders() {
     status: "Status",
     amount: "Amount",
     payment: "Date",
-    actions: "Actions",
   };
 
   console.log(orders);
@@ -96,14 +96,6 @@ export default function Orders() {
               <td className="px-6 py-4 whitespace-nowrap font-muktaVaani text-sm text-[var(--text-color)] transition-standard">
                 {new Date(order.date).toLocaleDateString()}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button className="text-blue-600 hover:text-blue-500 mr-4">
-                  <Edit className="w-5 h-5" />
-                </button>
-                <button className="text-purple-600 hover:text-purple-500">
-                  <FileUp className="w-5 h-5" />
-                </button>
-              </td>
             </tr>
           )}
         />
@@ -111,7 +103,7 @@ export default function Orders() {
         <Modal
           isOpen={openModal}
           onClose={() => setOpenModal(false)}
-          title={"Search Product"}
+          title={"Search Order"}
         ></Modal>
       </div>
     </div>
