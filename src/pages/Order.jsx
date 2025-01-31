@@ -127,7 +127,7 @@ const Order = () => {
                   </p>
                   <p className="text-sm text-[var(--text-color)] transition-standard font-muktaVaani">
                     <strong className="font-yantramanav">Paid:</strong>{" "}
-                    {order.payment ? (
+                    {order.payment === true ? (
                       <span className="text-green-500 font-semibold">Yes</span>
                     ) : (
                       <span className="text-red-500 font-semibold">No</span>
