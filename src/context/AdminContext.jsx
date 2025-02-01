@@ -9,6 +9,7 @@ export const AdminContext = createContext();
 const AdminContextProvider = (props) => {
   // <------------Constants and States------------>
   const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [adminToken, setAdminToken] = useState(null);
   const [theme, setTheme] = useState(
@@ -45,6 +46,20 @@ const AdminContextProvider = (props) => {
     toast.success("Successfully Logged Out!!", {
       id: "logout",
     });
+  };
+
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(backendUrl + "/api/product/list");
+      if (response.data.success) {
+        setProducts(response.data.products);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
   };
 
   const logIn = async (email, password) => {
@@ -106,6 +121,9 @@ const AdminContextProvider = (props) => {
     cloudinary,
     theme,
     toggleTheme,
+    products,
+    setProducts,
+    fetchProducts,
   };
 
   return (
