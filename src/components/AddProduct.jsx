@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import Modal from "./Modal";
+import { fields, inputClass, labelClass, onSubmit } from "../assets/assets";
+import { ImagePlus, X } from "lucide-react";
+import { AdminContext } from "../context/AdminContext";
+import toast from "react-hot-toast";
 import { ColorPicker } from "react-color-palette";
 import "react-color-palette/css";
-import Modal from "./Modal";
-import { fields, inputClass, labelClass } from "../assets/assets";
-import { ImagePlus, X } from "lucide-react";
 
 export default function AddProduct({
   formData,
@@ -11,12 +13,14 @@ export default function AddProduct({
   color,
   setColor,
   setParentModal,
-  onSubmitHandler,
-  loading,
+  action,
 }) {
   // <------------Handle states------------>
   const [openModal, setOpenModal] = useState(false);
   const [sizes, setSizes] = useState(["XS", "S", "M", "L", "XL", "XXL"]);
+  const [loading, setLoading] = useState(false);
+
+  const { adminToken } = useContext(AdminContext);
 
   // <------------Handle Side Effects------------>
   useEffect(() => {
@@ -30,6 +34,29 @@ export default function AddProduct({
   useEffect(() => {
     setFormData((prevData) => ({ ...prevData, color: color.hex }));
   }, [color]);
+
+  // Send form data to the DB
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      await toast.promise(
+        onSubmit(formData, adminToken),
+        {
+          loading: "Adding Product",
+          success: "Successfully added product",
+          error: (error) => error.message,
+        },
+        {
+          id: "onSubmit",
+        }
+      );
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
 
   // <------------Component Functions------------>
   const subcategoryOptions = {
@@ -80,11 +107,6 @@ export default function AddProduct({
     }));
   };
 
-  const handlesSubmit = (e) => {
-    e.preventDefault();
-    onSubmitHandler();
-  };
-
   // Remove an Image
   const removeImage = (index) => {
     setFormData({
@@ -94,9 +116,9 @@ export default function AddProduct({
   };
 
   return (
-    <form className="space-y-6 p-6 rounded-xl" onSubmit={handlesSubmit}>
+    <form className="space-y-6 p-6 rounded-xl" onSubmit={handleSubmit}>
       <h2 className="text-2xl font-bold text-[var(--text-color)] mb-6 font-muktaVaani">
-        Add New Product
+        {action === "edit" ? "Update Product Details" : "Add New Product"}
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -113,11 +135,11 @@ export default function AddProduct({
               id={id}
               value={formData[name]}
               onChange={handleChange}
-              required
+              required={name === "discount" ? false : true}
               disabled={loading}
               step={step}
               className={`${inputClass} ${
-                loading ? "cursor-not-allowed bg-gray-500" : ""
+                loading ? "cursor-not-allowed bg-gray-500" : "bg-transparent"
               }`}
             />
           </div>
@@ -136,7 +158,7 @@ export default function AddProduct({
             value={formData.category}
             onChange={handleChange}
             className={`${inputClass} ${
-              loading ? "cursor-not-allowed bg-gray-500" : ""
+              loading ? "cursor-not-allowed bg-gray-500" : "bg-transparent"
             }`}
           >
             {["Men", "Women", "Kids", "Unisex"].map((category) => (
@@ -164,7 +186,7 @@ export default function AddProduct({
             required
             disabled={loading}
             className={`${inputClass} ${
-              loading ? "cursor-not-allowed bg-gray-500" : ""
+              loading ? "cursor-not-allowed bg-gray-500" : "bg-transparent"
             }`}
           >
             {subcategoryOptions[formData.category].map((subcategory) => (
@@ -192,7 +214,7 @@ export default function AddProduct({
             id="tags"
             placeholder="Comma-separated tags"
             className={`${inputClass} ${
-              loading ? "cursor-not-allowed bg-gray-500" : ""
+              loading ? "cursor-not-allowed bg-gray-500" : "bg-transparent"
             }`}
           />
         </div>
@@ -209,7 +231,7 @@ export default function AddProduct({
             required
             disabled={loading}
             className={`${inputClass} ${
-              loading ? "cursor-not-allowed bg-gray-500" : ""
+              loading ? "cursor-not-allowed bg-gray-500" : "bg-transparent"
             }`}
           >
             {["Yes", "No"].map((option) => (
@@ -241,7 +263,7 @@ export default function AddProduct({
                 required
                 disabled={loading}
                 className={`${inputClass} ${
-                  loading ? "cursor-not-allowed bg-gray-500" : ""
+                  loading ? "cursor-not-allowed bg-gray-500" : "bg-transparent"
                 }`}
               />
               <div
@@ -288,7 +310,7 @@ export default function AddProduct({
             required
             disabled={loading}
             className={`${inputClass} ${
-              loading ? "cursor-not-allowed bg-gray-500" : ""
+              loading ? "cursor-not-allowed bg-gray-500" : "bg-transparent"
             }`}
           />
         </div>
@@ -316,9 +338,8 @@ export default function AddProduct({
             />
             <label
               htmlFor="image-upload"
-              className={`cursor-pointer flex items-center gap-2 text-(var(--text-color)) bg-[var(--border-color)] font-muktaVaani w-fit px-2 rounded-lg py-2 ${
-                loading ? "cursor-not-allowed bg-gray-500" : ""
-              }`}
+              className={`cursor-pointer flex items-center gap-2 text-(var(--text-color)) bg-[var(--border-color)] font-muktaVaani w-fit px-2 rounded-lg py-2
+                `}
             >
               <ImagePlus size={20} />
               Choose Images
@@ -338,10 +359,15 @@ export default function AddProduct({
                 {formData.image[index] ? (
                   <>
                     <img
-                      src={URL.createObjectURL(formData.image[index])}
+                      src={
+                        formData.image[index] instanceof File
+                          ? URL.createObjectURL(formData.image[index])
+                          : formData.image[index]
+                      }
                       alt={`Preview ${index + 1}`}
                       className="w-full h-full object-cover aspect-auto"
                     />
+
                     <button
                       type="button"
                       onClick={() => removeImage(index)}
@@ -400,7 +426,7 @@ export default function AddProduct({
           type="submit"
           className="bg-green-600 text-white px-5 py-2 rounded-md font-muktaVaani hover:bg-green-700 transition duration-200"
         >
-          Add Product
+          {action === "edit" ? "Update Product" : "Add Product"}
         </button>
       </div>
     </form>
