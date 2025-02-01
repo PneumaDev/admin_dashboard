@@ -1,19 +1,18 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Edit, Trash, Plus, Search } from "lucide-react";
 import Modal from "../components/Modal";
 import AddProduct from "./../components/AddProduct";
 import { useColor } from "react-color-palette";
 import "react-color-palette/css";
-import { generateSKU, logFormData, mockProducts } from "../assets/assets";
 import Table from "../components/Table";
 import { AdminContext } from "../context/AdminContext";
-import axios from "axios";
 
 export default function ProductsPage() {
-  const [loading, setLoading] = useState(false);
+  const [fetchingProducts, setFetchingProducts] = useState(true);
+  const [action, setAction] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [color, setColor] = useColor("#ffffff");
-  const [formData, setFormData] = useState({
+  const initialState = {
     name: "",
     discount: "",
     price: "",
@@ -26,68 +25,49 @@ export default function ProductsPage() {
     color: color.hex,
     isOriginal: "true",
     image: [],
-  });
-
-  const { backendUrl, adminToken } = useContext(AdminContext);
-
-  const onSubmit = async () => {
-    setLoading(true);
-    const form = new FormData();
-    form.append("name", formData.name);
-    form.append("description", formData.description);
-    form.append("quantity", formData.quantity);
-    form.append("price", formData.price);
-    form.append("category", formData.category);
-    form.append("subCategory", formData.subCategory);
-    form.append("bestSeller", formData.bestSeller);
-    form.append("sizes", JSON.stringify(formData.sizes));
-    form.append("sku", generateSKU());
-    form.append("brand", formData.brand);
-    form.append("tags", JSON.stringify(formData.tags.split(",")));
-    form.append("discount", formData.discount);
-    form.append("isOriginal", formData.isOriginal);
-
-    console.log(`Processing formData: ${formData.name}`);
-    console.log(`Product images:`, formData.image);
-    // Create an array of promises for image fetches
-    const imagePromises = formData.image.map((img, index) => {
-      console.log(`Appending file directly: ${img.name}`);
-      form.append(`image${index + 1}`, img);
-      return Promise.resolve();
-    });
-
-    // Wait for all images to be processed before continuing
-    await Promise.all(imagePromises);
-
-    logFormData(form);
-
-    try {
-      const response = await axios.post(backendUrl + "/api/product/add", form, {
-        headers: { token: adminToken },
-      });
-
-      console.log(response);
-
-      if (!response.data.success) {
-        throw new Error(
-          `Failed to add product ${formData.name}: ${response.data.message}`
-        );
-      }
-
-      console.log(`Successfully added product: ${formData.name}`);
-    } catch (error) {
-      console.log(error.message);
-    }
   };
+  const [itemData, setItemData] = useState(initialState);
+
+  const { products, fetchProducts } = useContext(AdminContext);
+
+  useEffect(() => {
+    setFetchingProducts(true);
+    if (products.length === 0) {
+      fetchProducts();
+    }
+    if (products.length > 0) {
+      setFetchingProducts(false);
+    }
+  }, [products]);
 
   const columnHeader = {
     sn: "SN",
-    formData: "Product",
+    itemData: "Product",
     status: "Status",
     inventory: "Inventory",
     category: "Category",
     actions: "Actions",
   };
+
+  const editProduct = (item) => {
+    setAction("edit");
+    setItemData((prevData) => ({ ...prevData, ...item }));
+    setOpenModal(true);
+  };
+
+  const addProduct = () => {
+    setAction("add");
+    setItemData(initialState);
+    setOpenModal(true);
+  };
+
+  if (fetchingProducts) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 bg-[var(--card-bg)] rounded-lg">
@@ -99,15 +79,12 @@ export default function ProductsPage() {
               Products
             </h1>
             <div className="flex space-x-4">
-              <button
-                onClick={() => setOpenModal(true)}
-                className="bg-blue-600 text-white px-2 md:px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 font-imprima"
-              >
+              <button className="bg-blue-600 text-white px-2 md:px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 font-imprima">
                 <Search className="w-4 h-4 md:mr-2" />
                 <span className="hidden md:flex">Search Product</span>
               </button>
               <button
-                onClick={() => setOpenModal(true)}
+                onClick={() => addProduct()}
                 className="bg-blue-600 text-white px-2 md:px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 font-imprima"
               >
                 <Plus className="w-4 h-4 md:mr-2" />
@@ -120,8 +97,8 @@ export default function ProductsPage() {
         {/* Products Table */}
         <Table
           columnHeader={columnHeader}
-          products={mockProducts}
-          renderRow={(formData, index) => (
+          products={products}
+          renderRow={(itemData, index) => (
             <tr
               key={index}
               className="hover: cursor-pointer hover:bg-[var(--border-color)]"
@@ -133,30 +110,38 @@ export default function ProductsPage() {
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm font-medium font-muktaVaani text-[var(--text-color)] transition-standard">
-                  {formData.name}
+                  {itemData.name}
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span
                   className={`px-2 inline-flex text-xs font-muktaVaani leading-5 font-semibold rounded-full ${
-                    formData.status === "In Stock"
-                      ? "bg-green-100 text-green-800"
-                      : formData.status === "Low Stock"
+                    itemData.quantity === 0
+                      ? "bg-red-100 text-red-800"
+                      : itemData.quantity <= 10
                       ? "bg-yellow-100 text-yellow-800"
-                      : "bg-red-100 text-red-800"
+                      : "bg-green-100 text-green-800"
                   }`}
                 >
-                  {formData.status}
+                  {itemData.quantity === 0
+                    ? "Out of Stock"
+                    : itemData.quantity <= 10
+                    ? "Low Stock"
+                    : "In Stock"}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap font-muktaVaani text-sm text-[var(--text-color)] transition-standard">
-                {formData.inventory}
+                {itemData.quantity}
               </td>
+
               <td className="px-6 py-4 whitespace-nowrap font-muktaVaani text-sm text-[var(--text-color)] transition-standard">
-                {formData.category}
+                {itemData.category}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button className="text-blue-600 hover:text-blue-500 mr-4">
+                <button
+                  className="text-blue-600 hover:text-blue-500 mr-4"
+                  onClick={() => editProduct(itemData)}
+                >
                   <Edit className="w-5 h-5" />
                 </button>
                 <button className="text-red-600 hover:text-red-500">
@@ -170,16 +155,15 @@ export default function ProductsPage() {
         <Modal
           isOpen={openModal}
           onClose={() => setOpenModal(false)}
-          title={"Add Product"}
+          title={action === "edit" ? "Update Product" : "Add Product"}
         >
           <AddProduct
-            formData={formData}
-            setFormData={setFormData}
+            formData={itemData}
+            setFormData={setItemData}
             color={color}
             setColor={setColor}
-            onSubmitHandler={onSubmit}
             setParentModal={setOpenModal}
-            loading={loading}
+            action={action}
           />
         </Modal>
       </div>
