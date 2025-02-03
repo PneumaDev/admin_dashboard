@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { PackageCheck, Clock, User, Mail, Truck } from "lucide-react";
+import { PackageCheck, User, Mail, Truck } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { AdminContext } from "../context/AdminContext";
 import OrderItem from "../components/OrderItem";
