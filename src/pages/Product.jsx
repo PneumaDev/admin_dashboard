@@ -75,6 +75,7 @@ export default function Product() {
         .resize(scale().width(1000));
 
       setImage(cldFullImg || "");
+      setLoading(false);
     }
   }, [productId, product]);
 
@@ -96,8 +97,8 @@ export default function Product() {
       <div className="flex items-center gap-3">
         <div className="bg-bg-sidecolor p-2 rounded-lg">{icon}</div>
         <div>
-          <p className="text-table-header text-xs">{title}</p>
-          <p className="font-medium">{children}</p>
+          <p className="text-table-header text-xs font-imprima">{title}</p>
+          <p className="font-medium font-muktaVaani">{children}</p>
         </div>
       </div>
     );
@@ -201,20 +202,20 @@ export default function Product() {
             <AdvancedImage
               cldImg={image}
               alt="Product"
-              className="w-full h-auto"
+              className="w-full h-auto rounded-md shadow-md"
               plugins={[lazyload()]}
             />
           </div>
         </div>
         {/* Product info */}
         <div className="flex-1 space-y-10 justify-between">
-          <h1 className="font-medium text-2xl mt-2 font-muktaVaani">
-            {product.name}
-          </h1>
           <div className="space-y-10 md:space-y-16 my-6">
             <div className="bg-card-bg rounded-xl ">
-              <div className="space-y-3 bg-[var(--hover-bg)] p-4 shadow-lg">
-                <h2 className="text-xl font-muktaVaani font-semibold mb-4 flex items-center gap-2 text-orange-500 ">
+              <div className="space-y-3 bg-[var(--hover-bg)] p-4 shadow-lg rounded-xl">
+                <h1 className="font-medium text-2xl mt-2 font-muktaVaani">
+                  {product.name}
+                </h1>
+                <h2 className="text-xl font-yantramanav font-semibold mb-4 flex items-center gap-2 text-orange-500 ">
                   <Tag size={18} className="text-orange-600" />
                   Pricing
                 </h2>
@@ -244,7 +245,7 @@ export default function Product() {
 
           {/* Description Card */}
           <div className="bg-card-bg rounded-xl bg-[var(--hover-bg)] p-4  my-6">
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-blue-500">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-blue-500 font-yantramanav">
               <Edit size={20} className="text-blue-600" />
               Description
             </h2>
@@ -255,16 +256,20 @@ export default function Product() {
 
           {/* Product Details Card */}
           <div className="bg-card-bg rounded-xl bg-[var(--hover-bg)] p-4 shadow-md ">
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-green-500">
+            <h2 className="text-xl font-semibold font-yantramanav mb-4 flex items-center gap-2 text-green-500">
               <ClipboardList size={20} className="text-green-600" />
               Product Details
             </h2>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <DetailItem icon={<BadgeCheck />} title="Authenticity">
-                {product.isOriginal ? "Original Product" : "Replica"}
+                <span className="font-muktaVaani">
+                  {product.isOriginal ? "Original Product" : "Replica"}
+                </span>
               </DetailItem>
               <DetailItem icon={<Box />} title="Category">
-                {product.category} / {product.subCategory}
+                <span className="font-muktaVaani">
+                  {product.category} / {product.subCategory}
+                </span>
               </DetailItem>
               <DetailItem icon={<List />} title="Available Sizes">
                 {product.sizes.join(", ")}
