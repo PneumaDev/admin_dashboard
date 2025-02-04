@@ -144,7 +144,7 @@ export default function Product() {
             </span>
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 w-full justify-end">
           <button
             onClick={() => {
               productAction("edit", product);
@@ -161,7 +161,7 @@ export default function Product() {
         </div>
       </div>
 
-      <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row px-6">
+      <div className="flex sm:gap-12 flex-col sm:flex-row px-6">
         {/* Product images */}
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
           <div className="flex scroller sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full">
@@ -208,8 +208,8 @@ export default function Product() {
           </div>
         </div>
         {/* Product info */}
-        <div className="flex-1 space-y-10 justify-between">
-          <div className="space-y-10 md:space-y-16 my-6">
+        <div className="flex-1 justify-between">
+          <div className="md:space-y-16 my-6">
             <div className="bg-card-bg rounded-xl ">
               <div className="space-y-3 bg-[var(--hover-bg)] p-4 shadow-lg rounded-xl">
                 <h1 className="font-medium text-2xl mt-2 font-muktaVaani">
@@ -222,7 +222,7 @@ export default function Product() {
                 <div className="flex justify-between">
                   <span className="font-muktaVaani">Base Price:</span>
                   <span className="font-imprima">
-                    ${product.price.toFixed(2)}
+                    Ksh.{product.price.toFixed(2)}
                   </span>
                 </div>
 
@@ -236,7 +236,8 @@ export default function Product() {
                 <div className="flex justify-between font-bold border-t border-blue-500 border-border-color pt-3">
                   <span className="font-muktaVaani">Final Price:</span>
                   <span className="font-imprima">
-                    ${(product.price * (1 - product.discount / 100)).toFixed(2)}
+                    Ksh.
+                    {(product.price * (1 - product.discount / 100)).toFixed(2)}
                   </span>
                 </div>
               </div>
