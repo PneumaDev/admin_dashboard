@@ -10,6 +10,8 @@ import {
   LogOut,
   Moon,
   Sun,
+  ImageIcon,
+  Presentation,
 } from "lucide-react";
 import { AdminContext } from "../context/AdminContext";
 
@@ -44,6 +46,8 @@ const Navbar = () => {
     { icon: Package, label: "Products", path: "/products", count: 24 },
     { icon: ShoppingCart, label: "Orders", path: "/orders", count: 5 },
     { icon: Users, label: "Customers", path: "/customers", count: 128 },
+    { icon: ImageIcon, label: "Media", path: "/media", count: null },
+    { icon: Presentation, label: "Metrics", path: "/metrics", count: null },
   ];
 
   return (
