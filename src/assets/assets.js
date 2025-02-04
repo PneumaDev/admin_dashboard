@@ -37,6 +37,22 @@ export const fields = [
 
 ];
 
+const initialState = {
+    name: "",
+    discount: "",
+    price: 0,
+    quantity: 0,
+    category: "Men",
+    subCategory: "Topwear",
+    description: "",
+    sizes: [],
+    tags: "",
+    color: "#ffffff",
+    isOriginal: true,
+    image: [],
+};
+
+
 export const onSubmit = async (itemData, adminToken) => {
     const form = new FormData();
     form.append("name", itemData.name);
@@ -49,7 +65,9 @@ export const onSubmit = async (itemData, adminToken) => {
     form.append("sizes", JSON.stringify(itemData.sizes));
     form.append("sku", generateSKU());
     form.append("brand", itemData.brand);
-    form.append("tags", JSON.stringify(itemData.tags.split(",")));
+    if (itemData.tags && itemData.tags.trim() !== "") {
+        form.append("tags", JSON.stringify(itemData.tags.split(",")));
+    }
     form.append("discount", itemData.discount);
     form.append("isOriginal", itemData.isOriginal);
 
@@ -105,4 +123,4 @@ const inputClass =
 const labelClass =
     "block text-sm font-medium text-[var(--text-color)] font-yantramanav";
 
-export { inputClass, labelClass, generateSKU, logFormData };
+export { inputClass, labelClass, generateSKU, logFormData, initialState };

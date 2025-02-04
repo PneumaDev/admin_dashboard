@@ -1,34 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import { Edit, Trash, Plus, Search } from "lucide-react";
-import Modal from "../components/Modal";
-import AddProduct from "./../components/AddProduct";
-import { useColor } from "react-color-palette";
-import "react-color-palette/css";
 import Table from "../components/Table";
 import { AdminContext } from "../context/AdminContext";
+import ProductActions from "../components/ProductActions";
+import { initialState } from "../assets/assets";
 
 export default function ProductsPage() {
   const [fetchingProducts, setFetchingProducts] = useState(true);
-  const [action, setAction] = useState(null);
-  const [openModal, setOpenModal] = useState(false);
-  const [color, setColor] = useColor("#ffffff");
-  const initialState = {
-    name: "",
-    discount: "",
-    price: "",
-    quantity: "",
-    category: "Men",
-    subCategory: "Topwear",
-    description: "",
-    sizes: [],
-    tags: "",
-    color: color.hex,
-    isOriginal: "true",
-    image: [],
-  };
   const [itemData, setItemData] = useState(initialState);
 
-  const { products, fetchProducts } = useContext(AdminContext);
+  const { products, fetchProducts, navigate, productAction, action } =
+    useContext(AdminContext);
 
   useEffect(() => {
     setFetchingProducts(true);
@@ -49,17 +31,17 @@ export default function ProductsPage() {
     actions: "Actions",
   };
 
-  const editProduct = (item) => {
-    setAction("edit");
-    setItemData((prevData) => ({ ...prevData, ...item }));
-    setOpenModal(true);
-  };
-
-  const addProduct = () => {
-    setAction("add");
-    setItemData(initialState);
-    setOpenModal(true);
-  };
+  // const productAction = (action, item) => {
+  //   if (action === "add") {
+  //     setAction("add");
+  //     setItemData(initialState);
+  //     setOpenModal(true);
+  //   } else {
+  //     setAction("edit");
+  //     setItemData((prevData) => ({ ...prevData, ...item }));
+  //     setOpenModal(true);
+  //   }
+  // };
 
   if (fetchingProducts) {
     return (
@@ -84,7 +66,7 @@ export default function ProductsPage() {
                 <span className="hidden md:flex">Search Product</span>
               </button>
               <button
-                onClick={() => addProduct()}
+                onClick={() => productAction("add")}
                 className="bg-blue-600 text-white px-2 md:px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 font-imprima"
               >
                 <Plus className="w-4 h-4 md:mr-2" />
@@ -102,6 +84,7 @@ export default function ProductsPage() {
             <tr
               key={index}
               className="hover: cursor-pointer hover:bg-[var(--border-color)]"
+              onClick={() => navigate(`/products/${itemData._id}`)}
             >
               <td className="px-6 py-4 whitespace-nowrap ">
                 <div className="text-sm font-medium font-muktaVaani text-[var(--text-color)] transition-standard">
@@ -140,32 +123,25 @@ export default function ProductsPage() {
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <button
                   className="text-blue-600 hover:text-blue-500 mr-4"
-                  onClick={() => editProduct(itemData)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    productAction("edit", itemData);
+                  }}
                 >
-                  <Edit className="w-5 h-5" />
+                  <Edit className="w-6 h-6" />
                 </button>
-                <button className="text-red-600 hover:text-red-500">
-                  <Trash className="w-5 h-5" />
+                <button
+                  className="text-red-600 hover:text-red-500"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Trash className="w-6 h-6" />
                 </button>
               </td>
             </tr>
           )}
         />
 
-        <Modal
-          isOpen={openModal}
-          onClose={() => setOpenModal(false)}
-          title={action === "edit" ? "Update Product" : "Add Product"}
-        >
-          <AddProduct
-            formData={itemData}
-            setFormData={setItemData}
-            color={color}
-            setColor={setColor}
-            setParentModal={setOpenModal}
-            action={action}
-          />
-        </Modal>
+        <ProductActions />
       </div>
     </div>
   );

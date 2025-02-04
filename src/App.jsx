@@ -10,6 +10,7 @@ import { AdminContext } from "./context/AdminContext";
 import Login from "./pages/Login";
 import { Toaster } from "react-hot-toast";
 import Order from "./pages/Order";
+import Product from "./pages/Product";
 
 function App() {
   const { adminToken } = useContext(AdminContext);
@@ -68,6 +69,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/products" element={<Products />} />
+              <Route path="/products/:productId" element={<Product />} />
               <Route path="/orders" element={<Orders />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/orders/:orderId" element={<Order />} />

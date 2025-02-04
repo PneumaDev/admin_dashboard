@@ -1,6 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import Modal from "./Modal";
-import { fields, inputClass, labelClass, onSubmit } from "../assets/assets";
+import {
+  fields,
+  initialState,
+  inputClass,
+  labelClass,
+  onSubmit,
+} from "../assets/assets";
 import { ImagePlus, X } from "lucide-react";
 import { AdminContext } from "../context/AdminContext";
 import toast from "react-hot-toast";
@@ -12,15 +18,14 @@ export default function AddProduct({
   setFormData,
   color,
   setColor,
-  setParentModal,
   action,
 }) {
   // <------------Handle states------------>
-  const [openModal, setOpenModal] = useState(false);
+  const [openColorModal, setColorModal] = useState(false);
   const [sizes, setSizes] = useState(["XS", "S", "M", "L", "XL", "XXL"]);
   const [loading, setLoading] = useState(false);
 
-  const { adminToken } = useContext(AdminContext);
+  const { adminToken, setOpenModal, setItemData } = useContext(AdminContext);
 
   // <------------Handle Side Effects------------>
   useEffect(() => {
@@ -51,6 +56,7 @@ export default function AddProduct({
           id: "onSubmit",
         }
       );
+      setItemData(initialState);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -133,7 +139,7 @@ export default function AddProduct({
               type={type}
               name={name}
               id={id}
-              value={formData[name]}
+              value={formData[name] ?? (type === "number" ? 0 : "")}
               onChange={handleChange}
               required={name === "discount" ? false : true}
               disabled={loading}
@@ -192,7 +198,7 @@ export default function AddProduct({
             {subcategoryOptions[formData.category].map((subcategory) => (
               <option
                 key={subcategory}
-                value={subcategory}
+                value={formData.subcategory}
                 className="bg-[var(--bg-color)]"
               >
                 {subcategory}
@@ -274,17 +280,17 @@ export default function AddProduct({
                   background:
                     "linear-gradient(90deg, #ff0000, #00ff00, #0000ff, #ffff00)",
                 }}
-                onClick={() => !loading && setOpenModal(true)}
+                onClick={() => !loading && setColorModal(true)}
               ></div>
               <div
                 className="absolute right-12 top-1/2 transform -translate-y-1/2 w-4 h-4 rounded-md cursor-pointer border border-gray-300"
                 style={{ backgroundColor: color.hex }}
-                onClick={() => !loading && setOpenModal(true)}
+                onClick={() => !loading && setColorModal(true)}
               ></div>
 
               <Modal
-                onSubmitHandler={() => setOpenModal(false)}
-                isOpen={openModal}
+                onSubmitHandler={() => setColorModal(false)}
+                isOpen={openColorModal}
                 title={"Pick a color"}
                 button1={"Set"}
                 cancelButton={false}
@@ -416,7 +422,8 @@ export default function AddProduct({
 
       <div className="flex justify-end pt-4 space-x-3">
         <button
-          onClick={() => setParentModal(false)}
+          type="button"
+          onClick={() => setOpenModal(false)}
           className="bg-red-500 text-white px-5 py-2 font-muktaVaani rounded-md hover:bg-red-600 transition duration-200"
         >
           Close
