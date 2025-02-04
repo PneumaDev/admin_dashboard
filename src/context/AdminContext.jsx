@@ -3,11 +3,15 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Cloudinary } from "@cloudinary/url-gen";
+import { initialState } from "../assets/assets";
 
 export const AdminContext = createContext();
 
 const AdminContextProvider = (props) => {
   // <------------Constants and States------------>
+  const [action, setAction] = useState("");
+  const [itemData, setItemData] = useState({});
+  const [openModal, setOpenModal] = useState(false);
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,6 +50,18 @@ const AdminContextProvider = (props) => {
     toast.success("Successfully Logged Out!!", {
       id: "logout",
     });
+  };
+
+  const productAction = (action, item) => {
+    if (action === "add") {
+      setAction("add");
+      setItemData(initialState);
+      setOpenModal(true);
+    } else {
+      setAction("edit");
+      setItemData((prevData) => ({ ...prevData, ...item }));
+      setOpenModal(true);
+    }
   };
 
   const fetchProducts = async () => {
@@ -124,6 +140,12 @@ const AdminContextProvider = (props) => {
     products,
     setProducts,
     fetchProducts,
+    productAction,
+    action,
+    itemData,
+    openModal,
+    setItemData,
+    setOpenModal,
   };
 
   return (
