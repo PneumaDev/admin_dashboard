@@ -39,7 +39,7 @@ export const fields = [
 
 const initialState = {
     name: "",
-    discount: "",
+    discount: 0,
     price: 0,
     quantity: 0,
     category: "Men",
@@ -65,10 +65,8 @@ export const onSubmit = async (itemData, adminToken) => {
     form.append("sizes", JSON.stringify(itemData.sizes));
     form.append("sku", generateSKU());
     form.append("brand", itemData.brand);
-    if (itemData.tags && itemData.tags.trim() !== "") {
-        form.append("tags", JSON.stringify(itemData.tags.split(",")));
-    }
-    form.append("discount", itemData.discount);
+    form.append("tags", itemData.tags ? JSON.stringify(itemData.tags.toString().split(",")) : JSON.stringify([]));
+    form.append("discount", itemData.discount ? itemData.discount : 0);
     form.append("isOriginal", itemData.isOriginal);
 
     console.log(`Processing itemData: ${itemData.name}`);
@@ -98,7 +96,7 @@ export const onSubmit = async (itemData, adminToken) => {
         return ({ message: `Successfully added product: ${itemData.name}`, success: true });
     } catch (error) {
         console.log(error);
-        throw Error(error);
+        throw Error(error.message);
     }
 };
 
