@@ -19,7 +19,7 @@ export default function Orders() {
   };
 
   useEffect(() => {
-    if (adminToken) {
+    if (adminToken && orders.length < 0) {
       fetchAllOrders();
     }
   }, [adminToken]);
