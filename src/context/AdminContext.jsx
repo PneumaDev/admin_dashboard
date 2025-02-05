@@ -32,9 +32,6 @@ const AdminContextProvider = (props) => {
     if (!adminToken && savedToken) {
       setAdminToken(savedToken);
     }
-    if (adminToken) {
-      fetchAllOrders();
-    }
   }, [adminToken]);
 
   useEffect(() => {
@@ -102,6 +99,7 @@ const AdminContextProvider = (props) => {
   const fetchAllOrders = async () => {
     if (!adminToken) return;
     setLoading(true);
+    console.log("Called");
     try {
       const response = await axios.post(
         `${backendUrl}/api/order/list`,

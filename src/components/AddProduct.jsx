@@ -8,6 +8,9 @@ import {
   onSubmit,
 } from "../assets/assets";
 import { ImagePlus, X } from "lucide-react";
+import { AdvancedImage } from "@cloudinary/react";
+import { lazyload } from "@cloudinary/react";
+import { scale } from "@cloudinary/url-gen/actions/resize";
 import { AdminContext } from "../context/AdminContext";
 import toast from "react-hot-toast";
 import { ColorPicker } from "react-color-palette";
@@ -25,7 +28,8 @@ export default function AddProduct({
   const [sizes, setSizes] = useState(["XS", "S", "M", "L", "XL", "XXL"]);
   const [loading, setLoading] = useState(false);
 
-  const { adminToken, setOpenModal, setItemData } = useContext(AdminContext);
+  const { adminToken, setOpenModal, setItemData, cloudinary } =
+    useContext(AdminContext);
 
   // <------------Handle Side Effects------------>
   useEffect(() => {
@@ -42,14 +46,19 @@ export default function AddProduct({
 
   // Send form data to the DB
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (formData.sizes < 1) {
+      return toast.error("Please add sizes", { id: "sizes" });
+    }
+
     try {
       setLoading(true);
       await toast.promise(
         onSubmit(formData, adminToken),
         {
-          loading: "Adding Product",
-          success: "Successfully added product",
+          loading: `${action === "edit" ? "Updating" : "Adding"} Product`,
+          success: `Successfully ${
+            action === "edit" ? "Updated" : "Added"
+          } Product`,
           error: (error) => error.message,
         },
         {
@@ -57,9 +66,9 @@ export default function AddProduct({
         }
       );
       setItemData(initialState);
-      setLoading(false);
     } catch (error) {
       console.log(error);
+    } finally {
       setLoading(false);
     }
   };
@@ -75,7 +84,7 @@ export default function AddProduct({
   const selectedSizes = [];
 
   const handleChange = (e) => {
-    const { name, files } = e.target;
+    const { name, files, type, value } = e.target;
 
     if (name === "image") {
       const selectedFiles = Array.from(files);
@@ -98,7 +107,7 @@ export default function AddProduct({
     } else {
       setFormData((prevState) => ({
         ...prevState,
-        [name]: e.target.value,
+        [name]: type === "number" ? (value === "" ? 0 : Number(value)) : value,
       }));
     }
   };
@@ -122,7 +131,7 @@ export default function AddProduct({
   };
 
   return (
-    <form className="space-y-6 p-6 rounded-xl" onSubmit={handleSubmit}>
+    <form className="space-y-6 p-6 rounded-xl">
       <h2 className="text-2xl font-bold text-[var(--text-color)] mb-6 font-muktaVaani">
         {action === "edit" ? "Update Product Details" : "Add New Product"}
       </h2>
@@ -344,7 +353,11 @@ export default function AddProduct({
             />
             <label
               htmlFor="image-upload"
-              className={`cursor-pointer flex items-center gap-2 text-(var(--text-color)) bg-[var(--border-color)] font-muktaVaani w-fit px-2 rounded-lg py-2
+              className={` ${
+                loading
+                  ? "cursor-not-allowed bg-gray-500"
+                  : "bg-[var(--border-color)] cursor-pointer"
+              } my-2 flex items-center gap-2 text-(var(--text-color)) bg-[var(--border-color)] font-muktaVaani w-fit px-2 rounded-lg py-2
                 `}
             >
               <ImagePlus size={20} />
@@ -354,39 +367,67 @@ export default function AddProduct({
               You can upload up to 4 images. (JPG, PNG, GIF)
             </p>
           </div>
-
           {/* Image Preview Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[...Array(4)].map((_, index) => (
-              <div
-                key={index}
-                className="relative w-full h-32 md:h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden"
-              >
-                {formData.image[index] ? (
-                  <>
-                    <img
-                      src={
-                        formData.image[index] instanceof File
-                          ? URL.createObjectURL(formData.image[index])
-                          : formData.image[index]
-                      }
-                      alt={`Preview ${index + 1}`}
-                      className="w-full h-full object-cover aspect-auto"
-                    />
+            {[...Array(4)].map((_, index) => {
+              const imageSrc = formData.image[index];
 
-                    <button
-                      type="button"
-                      onClick={() => removeImage(index)}
-                      className="absolute top-1 right-1 bg-gray-800 text-white rounded-full p-1"
-                    >
-                      <X size={16} />
-                    </button>
-                  </>
-                ) : (
-                  <ImagePlus size={30} className="text-gray-400" />
-                )}
-              </div>
-            ))}
+              return (
+                <div
+                  key={index}
+                  className="relative w-full h-32 md:h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden"
+                >
+                  {imageSrc ? (
+                    <>
+                      {imageSrc instanceof File ? (
+                        <img
+                          src={URL.createObjectURL(imageSrc)}
+                          alt={`Preview ${index + 1}`}
+                          className="w-full h-full object-cover aspect-auto"
+                        />
+                      ) : (
+                        (() => {
+                          const publicId = imageSrc
+                            .split("/")
+                            .slice(-2)
+                            .join("/")
+                            .split(".")[0];
+
+                          // Create Cloudinary image instance
+                          const cldThumb = cloudinary
+                            .image(publicId)
+                            .resize(scale(150));
+
+                          return (
+                            <AdvancedImage
+                              key={index}
+                              cldImg={cldThumb}
+                              className="w-full h-full object-cover rounded-md"
+                              plugins={[lazyload()]}
+                              alt={`Product ${index}`}
+                            />
+                          );
+                        })()
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!loading) {
+                            removeImage(index);
+                          }
+                        }}
+                        className="absolute top-1 right-1 bg-gray-800 text-white rounded-full p-1"
+                      >
+                        <X size={16} />
+                      </button>
+                    </>
+                  ) : (
+                    <ImagePlus size={30} className="text-gray-400" />
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -400,8 +441,14 @@ export default function AddProduct({
               <button
                 key={size}
                 type="button"
-                onClick={() => toggleSize(size)}
-                className={`w-12 h-12 flex items-center justify-center font-medium border rounded-md cursor-pointer ${
+                onClick={() => {
+                  if (!loading) {
+                    toggleSize(size);
+                  }
+                }}
+                className={`w-12 h-12 flex items-center justify-center font-medium border rounded-md ${
+                  loading ? "cursor-not-allowed" : "cursor-pointer"
+                } ${
                   formData.sizes.includes(size)
                     ? "bg-blue-500 text-white border-blue-500"
                     : "bg-transparent text-[var(--text-color)] border-[var(--border-color)]"
@@ -423,17 +470,35 @@ export default function AddProduct({
       <div className="flex justify-end pt-4 space-x-3">
         <button
           type="button"
-          onClick={() => setOpenModal(false)}
-          className="bg-red-500 text-white px-5 py-2 font-muktaVaani rounded-md hover:bg-red-600 transition duration-200"
+          onClick={() => {
+            if (!loading) {
+              setOpenModal(false);
+            }
+          }}
+          className={`bg-red-500 ${
+            loading ? "cursor-not-allowed" : " cursor-pointer"
+          } text-white px-5 py-2 font-muktaVaani rounded-md hover:bg-red-600 transition duration-200`}
         >
           Close
         </button>
 
         <button
+          onClick={(e) => {
+            e.preventDefault();
+            if (!loading) {
+              handleSubmit();
+            }
+          }}
           type="submit"
-          className="bg-green-600 text-white px-5 py-2 rounded-md font-muktaVaani hover:bg-green-700 transition duration-200"
+          className={`bg-green-600 ${
+            loading ? "cursor-wait" : " cursor-pointer"
+          } text-white px-5 py-2 rounded-md font-muktaVaani hover:bg-green-700 transition duration-200`}
         >
-          {action === "edit" ? "Update Product" : "Add Product"}
+          {action === "edit" && !loading
+            ? "Update Product"
+            : action === "edit" && loading
+            ? "Updating..."
+            : "Add Product"}
         </button>
       </div>
     </form>

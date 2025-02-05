@@ -21,7 +21,7 @@ import axios from "axios";
 
 export default function Product() {
   const [product, setProduct] = useState([]);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(true);
   const { productId } = useParams();
   const { products, cloudinary, productAction, backendUrl } =
@@ -65,13 +65,11 @@ export default function Product() {
         .slice(-2)
         .join("/")
         .split(".")[0];
-
       const cldFullImg = cloudinary
         .image(publicId)
         .format("auto")
         .quality("auto")
         .resize(scale().width(1000));
-
       setImage(cldFullImg || "");
       setLoading(false);
     }
@@ -102,7 +100,7 @@ export default function Product() {
     );
   }
 
-  if (loading) {
+  if (loading && !image) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-500"></div>
@@ -133,7 +131,7 @@ export default function Product() {
               </span>
             )}
           </h1>
-          <p className="text-sm text-table-header mt-1 flex items-center gap-2">
+          <div className="text-sm text-table-header mt-1 flex items-center gap-2">
             <div className="flex">
               <div className="font-muktaVaani">SKU: </div>
               <div className="text-sm font-muktaVaani ml-1">
@@ -145,19 +143,19 @@ export default function Product() {
               <Calendar size={14} className="inline mr-1" />
               {new Date(product.date).toLocaleDateString()}
             </span>
-          </p>
+          </div>
         </div>
         <div className="flex gap-3 w-full justify-end">
           <button
             onClick={() => {
               productAction("edit", product);
             }}
-            className="bg-card-bg px-4 py-2  bg-green-300 hover:bg-green-400 text-black font-imprima rounded-lg hover:bg-hover-bg transition-standard flex items-center gap-2"
+            className="bg-card-bg cursor-pointer px-4 py-2  bg-green-300 hover:bg-green-400 text-black font-imprima rounded-lg hover:bg-hover-bg transition-standard flex items-center gap-2"
           >
             <Edit size={18} />
             Edit Product
           </button>
-          <button className="bg-red-100 text-red-800 px-4 font-imprima py-2 rounded-lg hover:bg-red-200 transition-standard flex items-center gap-1">
+          <button className="bg-red-100 cursor-pointer text-red-800 px-4 font-imprima py-2 rounded-lg hover:bg-red-200 transition-standard flex items-center gap-1">
             <Trash size={18} />
             Delete
           </button>
@@ -177,18 +175,10 @@ export default function Product() {
                 .split(".")[0];
 
               // Create a Cloudinary image instance for thumbnails
-              const cldThumb = cloudinary
-                .image(publicId)
-                .format("auto")
-                .quality("auto")
-                .resize(scale().width(150));
+              const cldThumb = cloudinary.image(publicId).resize(scale(150));
 
               // Create a Cloudinary image instance for the main display
-              const cldFullImg = cloudinary
-                .image(publicId)
-                .format("auto")
-                .quality("auto")
-                .resize(scale().width(1000));
+              const cldFullImg = cloudinary.image(publicId).resize(scale(1000));
 
               return (
                 <AdvancedImage
@@ -202,35 +192,39 @@ export default function Product() {
             })}
           </div>
           <div className="w-full sm:w-[80%]">
-            <AdvancedImage
-              cldImg={image}
-              alt="Product"
-              className="w-full h-auto rounded-md shadow-md"
-              plugins={[lazyload()]}
-            />
+            {image && (
+              <AdvancedImage
+                cldImg={image}
+                alt="Product"
+                className="w-full h-auto rounded-lg"
+                plugins={[lazyload()]}
+              />
+            )}
           </div>
         </div>
         {/* Product info */}
         <div className="flex-1 justify-between">
-          <div className="mb-6">
-            <div className="bg-card-bg pb-5 border-b">
-              <h1 className="font-medium text-2xl mt-2 font-muktaVaani">
-                {product.name}
-              </h1>
-              <p className="mt-5 text-2xl font-medium font-yantramanav">
-                Ksh.
-                <span className="text-4xl font-bold font-muktaVaani">
-                  {product.price - (product.discount ? product.discount : 0)}
-                </span>
+          <div className="bg-card-bg ">
+            <h1 className="font-medium text-2xl mt-2 font-muktaVaani">
+              {product.name}
+            </h1>
+            <p className="mt-5 text-2xl font-medium font-yantramanav">
+              Ksh.
+              <span className="text-4xl font-bold font-muktaVaani">
+                {product.price - (product.discount ? product.discount : 0)}
+              </span>
+              {product.discount > 0 ? (
                 <span className="text-1xl font-bold font-muktaVaani line-through ml-2 px-2 rounded-md text-black bg-blue-300">
                   {product.price}
                 </span>
-              </p>
-            </div>
+              ) : (
+                <></>
+              )}
+            </p>
           </div>
 
           {/* Description Card */}
-          <div className="bg-card-bg rounded-xl my-6">
+          <div className="bg-card-bg my-6 pb-5  border-b border-[var(--border-color)]">
             <p className="text-sm text-gray-400 font-imprima">
               {product.description}
             </p>
@@ -238,7 +232,7 @@ export default function Product() {
 
           {/* Product Details Card */}
           <div className="bg-card-bg rounded-xl">
-            <h2 className="text-xl font-semibold font-yantramanav mb-4 flex items-center gap-2 text-green-500">
+            <h2 className="text-xl font-semibold font-yantramanav pt-2 mb-4 flex items-center gap-2 text-green-500">
               <ClipboardList size={20} className="text-green-600" />
               Product Details
             </h2>

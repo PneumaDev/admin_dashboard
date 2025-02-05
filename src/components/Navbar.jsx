@@ -43,8 +43,8 @@ const Navbar = () => {
 
   const NavItems = [
     { icon: Home, label: "Home", path: "/", count: null },
-    { icon: Package, label: "Products", path: "/products", count: 24 },
     { icon: ShoppingCart, label: "Orders", path: "/orders", count: 5 },
+    { icon: Package, label: "Products", path: "/products", count: 24 },
     { icon: Users, label: "Customers", path: "/customers", count: 128 },
     { icon: ImageIcon, label: "Media", path: "/media", count: null },
     { icon: Presentation, label: "Metrics", path: "/metrics", count: null },

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Modal from "../components/Modal";
 import { Edit, FileUp, Search, Trash } from "lucide-react";
 import { AdminContext } from "../context/AdminContext";
@@ -6,9 +6,9 @@ import Table from "../components/Table";
 
 export default function Orders() {
   const [openModal, setOpenModal] = useState(false);
-  const [action, setAction] = useState(null);
 
-  const { orders, loading, navigate } = useContext(AdminContext);
+  const { orders, loading, navigate, adminToken, fetchAllOrders } =
+    useContext(AdminContext);
 
   const columnHeader = {
     sn: "SN",
@@ -18,7 +18,11 @@ export default function Orders() {
     payment: "Date",
   };
 
-  console.log(orders);
+  useEffect(() => {
+    if (adminToken) {
+      fetchAllOrders();
+    }
+  }, [adminToken]);
 
   if (loading) {
     return (
