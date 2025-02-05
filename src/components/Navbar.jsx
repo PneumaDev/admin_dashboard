@@ -108,7 +108,7 @@ const Navbar = () => {
                 >
                   <div className="flex items-center space-x-3">
                     <Icon className="w-5 h-5 md:w-6 md:h-6" />
-                    {!isCollapsed && <span>{label}</span>}
+                    <span>{label}</span>
                   </div>
                   {count !== null && !isCollapsed && (
                     <span className="px-2 py-1 text-xs font-muktaVaani font-medium rounded-full bg-[var(--hover-bg)]">
@@ -165,7 +165,7 @@ const Navbar = () => {
       {/* Mobile Overlay */}
       {isMobile && isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 backdrop-blur-sm transition-opacity duration-300"
+          className="fixed inset-0 bg-[rgba(0,0,0,0.8)] z-40 transition-opacity duration-300"
           onClick={toggleSidebar}
         />
       )}
