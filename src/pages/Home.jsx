@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Users,
   ShoppingBag,
@@ -13,7 +13,16 @@ import { Link } from "react-router-dom";
 import { AdminContext } from "../context/AdminContext";
 
 export default function Home() {
-  const { orders, navigate, loading } = useContext(AdminContext);
+  // const [loading, setLoading] = useState(true);
+
+  const { orders, navigate, fetchAllOrders, loading, adminToken } =
+    useContext(AdminContext);
+
+  useEffect(() => {
+    if (adminToken) {
+      fetchAllOrders();
+    }
+  }, [adminToken]);
 
   const stats = [
     {
@@ -63,8 +72,6 @@ export default function Home() {
       type: "review",
     },
   ];
-
-  console.log(orders);
 
   if (loading) {
     return (
