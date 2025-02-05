@@ -4,8 +4,6 @@ import { lazyload } from "@cloudinary/react";
 import { scale } from "@cloudinary/url-gen/actions/resize";
 import {
   Edit,
-  Package,
-  Tag,
   BadgeCheck,
   BarChart,
   Calendar,
@@ -98,7 +96,7 @@ export default function Product() {
         <div className="bg-bg-sidecolor p-2 rounded-lg">{icon}</div>
         <div>
           <p className="text-table-header text-xs font-imprima">{title}</p>
-          <p className="font-medium font-muktaVaani">{children}</p>
+          <div className="font-medium font-muktaVaani">{children}</div>
         </div>
       </div>
     );
@@ -136,8 +134,13 @@ export default function Product() {
             )}
           </h1>
           <p className="text-sm text-table-header mt-1 flex items-center gap-2">
-            <span className="font-muktaVaani">SKU: {product.sku}</span>
-            <span>•</span>
+            <div className="flex">
+              <div className="font-muktaVaani">SKU: </div>
+              <div className="text-sm font-muktaVaani ml-1">
+                {product.sku.slice(0, 10)}...
+              </div>
+            </div>
+            <span className="font-bold">•</span>
             <span className="font-muktaVaani flex items-center">
               <Calendar size={14} className="inline mr-1" />
               {new Date(product.date).toLocaleDateString()}
@@ -149,7 +152,7 @@ export default function Product() {
             onClick={() => {
               productAction("edit", product);
             }}
-            className="bg-card-bg px-4 py-2 bg-green-300 hover:bg-green-400 text-black font-imprima rounded-lg hover:bg-hover-bg transition-standard flex items-center gap-2"
+            className="bg-card-bg px-4 py-2  bg-green-300 hover:bg-green-400 text-black font-imprima rounded-lg hover:bg-hover-bg transition-standard flex items-center gap-2"
           >
             <Edit size={18} />
             Edit Product
@@ -209,54 +212,32 @@ export default function Product() {
         </div>
         {/* Product info */}
         <div className="flex-1 justify-between">
-          <div className="md:space-y-16 my-6">
-            <div className="bg-card-bg rounded-xl ">
-              <div className="space-y-3 bg-[var(--hover-bg)] p-4 shadow-lg rounded-xl">
-                <h1 className="font-medium text-2xl mt-2 font-muktaVaani">
-                  {product.name}
-                </h1>
-                <h2 className="text-xl font-yantramanav font-semibold mb-4 flex items-center gap-2 text-orange-500 ">
-                  <Tag size={18} className="text-orange-600" />
-                  Pricing
-                </h2>
-                <div className="flex justify-between">
-                  <span className="font-muktaVaani">Base Price:</span>
-                  <span className="font-imprima">
-                    Ksh.{product.price.toFixed(2)}
-                  </span>
-                </div>
-
-                <div className="flex justify-between text-green-500">
-                  <span className="font-muktaVaani">Discount:</span>
-                  <span className="font-imprima">
-                    -{product.discount ? product.discount : 0}%
-                  </span>
-                </div>
-
-                <div className="flex justify-between font-bold border-t border-blue-500 border-border-color pt-3">
-                  <span className="font-muktaVaani">Final Price:</span>
-                  <span className="font-imprima">
-                    Ksh.
-                    {(product.price * (1 - product.discount / 100)).toFixed(2)}
-                  </span>
-                </div>
-              </div>
+          <div className="mb-6">
+            <div className="bg-card-bg pb-5 border-b">
+              <h1 className="font-medium text-2xl mt-2 font-muktaVaani">
+                {product.name}
+              </h1>
+              <p className="mt-5 text-2xl font-medium font-yantramanav">
+                Ksh.
+                <span className="text-4xl font-bold font-muktaVaani">
+                  {product.price - (product.discount ? product.discount : 0)}
+                </span>
+                <span className="text-1xl font-bold font-muktaVaani line-through ml-2 px-2 rounded-md text-black bg-blue-300">
+                  {product.price}
+                </span>
+              </p>
             </div>
           </div>
 
           {/* Description Card */}
-          <div className="bg-card-bg rounded-xl bg-[var(--hover-bg)] p-4  my-6">
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-blue-500 font-yantramanav">
-              <Edit size={20} className="text-blue-600" />
-              Description
-            </h2>
-            <p className="text-sm text-[var(--text-color)]">
+          <div className="bg-card-bg rounded-xl my-6">
+            <p className="text-sm text-gray-400 font-imprima">
               {product.description}
             </p>
           </div>
 
           {/* Product Details Card */}
-          <div className="bg-card-bg rounded-xl bg-[var(--hover-bg)] p-4 shadow-md ">
+          <div className="bg-card-bg rounded-xl">
             <h2 className="text-xl font-semibold font-yantramanav mb-4 flex items-center gap-2 text-green-500">
               <ClipboardList size={20} className="text-green-600" />
               Product Details
