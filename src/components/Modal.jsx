@@ -12,7 +12,7 @@ export default function Modal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70 px-4">
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-[rgba(0,0,0,0.7)] px-4">
       <div className="bg-[var(--bg-color)] rounded-lg shadow-xl max-w-5xl lg:max-w-7xl w-full p-8 relative max-h-[90vh] overflow-y-auto">
         {cancelButton && (
           <button
