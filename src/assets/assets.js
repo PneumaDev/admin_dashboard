@@ -1,6 +1,8 @@
 import axios from "axios";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
+import undraw from "../images/undraw.svg";
+
 export const fields = [
     {
         label: "Name:",
@@ -39,9 +41,9 @@ export const fields = [
 
 const initialState = {
     name: "",
-    discount: 0,
-    price: 0,
-    quantity: 0,
+    discount: "",
+    price: "",
+    quantity: "",
     category: "Men",
     subCategory: "Topwear",
     description: "",
@@ -66,16 +68,32 @@ export const onSubmit = async (itemData, adminToken) => {
     form.append("sku", generateSKU());
     form.append("brand", itemData.brand);
     form.append("tags", itemData.tags ? JSON.stringify(itemData.tags.toString().split(",")) : JSON.stringify([]));
-    form.append("discount", itemData.discount ? itemData.discount : 0);
+    form.append("discount", itemData.discount || 0);
     form.append("isOriginal", itemData.isOriginal);
 
     console.log(`Processing itemData: ${itemData.name}`);
     console.log(`Product images:`, itemData.image);
+
     // Create an array of promises for image fetches
-    const imagePromises = itemData.image.map((img, index) => {
-        console.log(`Appending file directly: ${img.name}`);
-        form.append(`image${index + 1}`, img);
-        return Promise.resolve();
+    const imagePromises = itemData.image.map(async (img, index) => {
+        if (img instanceof File) {
+            console.log(`Appending file directly: ${img.name}`);
+            form.append(`image${index + 1}`, img);
+        } else if (typeof img === "string") {
+            try {
+                console.log(`Fetching image from URL: ${img}`);
+                const response = await fetch(img);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch image: ${img}`);
+                }
+                const blob = await response.blob();
+                const file = new File([blob], `image${index + 1}.jpg`, { type: blob.type });
+                console.log(`Appending fetched image: ${file.name}`);
+                form.append(`image${index + 1}`, file);
+            } catch (err) {
+                console.error("Error fetching image:", err);
+            }
+        }
     });
 
     // Wait for all images to be processed before continuing
@@ -93,12 +111,13 @@ export const onSubmit = async (itemData, adminToken) => {
                 `Failed to add product ${itemData.name}: ${response.data.message}`
             );
         }
-        return ({ message: `Successfully added product: ${itemData.name}`, success: true });
+        return { message: `Successfully added product: ${itemData.name}`, success: true };
     } catch (error) {
         console.log(error);
         throw Error(error.message);
     }
 };
+
 
 function generateSKU(length = 8) {
     const array = new Uint8Array(length);
@@ -121,4 +140,4 @@ const inputClass =
 const labelClass =
     "block text-sm font-medium text-[var(--text-color)] font-yantramanav";
 
-export { inputClass, labelClass, generateSKU, logFormData, initialState };
+export { inputClass, labelClass, generateSKU, logFormData, initialState, undraw };
