@@ -18,7 +18,6 @@ import { useParams } from "react-router-dom";
 import { AdminContext } from "../context/AdminContext";
 import ProductActions from "../components/ProductActions";
 import axios from "axios";
-import { undraw } from "../assets/assets";
 
 export default function Product() {
   const [product, setProduct] = useState([]);

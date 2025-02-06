@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AdminContext } from "../context/AdminContext";
-import { undraw } from "../assets/assets";
 import InfoMessage from "../components/InfoComponent";
 
 export default function Home() {
