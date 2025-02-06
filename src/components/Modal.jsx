@@ -17,7 +17,7 @@ export default function Modal({
         {cancelButton && (
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 text-gray-600 hover:text-gray-800"
+            className="absolute top-3 right-3 text-gray-600 hover:text-gray-800 cursor-pointer"
           >
             &times;
           </button>
@@ -30,7 +30,7 @@ export default function Modal({
           {button2 && buttonsVisible && (
             <button
               onClick={onClose}
-              className="bg-red-500 text-white px-5 py-2 font-muktaVaani rounded-md hover:bg-red-600 transition duration-200"
+              className="bg-red-500 cursor-pointer text-white px-5 py-2 font-muktaVaani rounded-md hover:bg-red-600 transition duration-200"
             >
               {button2}
             </button>
@@ -38,7 +38,7 @@ export default function Modal({
           {button1 && buttonsVisible && (
             <button
               onClick={onSubmitHandler}
-              className="bg-green-600 text-white px-5 py-2 rounded-md font-muktaVaani hover:bg-green-700 transition duration-200"
+              className="bg-green-600 cursor-pointer text-white px-5 py-2 rounded-md font-muktaVaani hover:bg-green-700 transition duration-200"
             >
               {button1}
             </button>

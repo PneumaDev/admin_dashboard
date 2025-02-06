@@ -62,10 +62,15 @@ const AdminContextProvider = (props) => {
   };
 
   const fetchProducts = async () => {
+    if (!adminToken) return;
     try {
       const response = await axios.get(backendUrl + "/api/product/list");
       if (response.data.success) {
-        setProducts(response.data.products);
+        if (response.data.products.length < 1) {
+          setProducts(null);
+        } else {
+          setProducts(response.data.products);
+        }
       } else {
         toast.error(response.data.message);
       }
@@ -99,7 +104,6 @@ const AdminContextProvider = (props) => {
   const fetchAllOrders = async () => {
     if (!adminToken) return;
     setLoading(true);
-    console.log("Called");
     try {
       const response = await axios.post(
         `${backendUrl}/api/order/list`,
@@ -107,7 +111,12 @@ const AdminContextProvider = (props) => {
         { headers: { token: adminToken } }
       );
       if (response.data.success) {
-        setOrders(response.data.orders.reverse());
+        if (response.data.orders.length < 1) {
+          setOrders(null);
+        } else {
+          setOrders(response.data.orders.reverse());
+        }
+        setLoading(false);
       } else {
         toast.error(response.data.message);
       }

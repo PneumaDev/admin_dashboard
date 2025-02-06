@@ -71,7 +71,7 @@ const Navbar = () => {
             <div>
               <button
                 onClick={toggleTheme}
-                className="w-full flex items-center justify-center gap-2 p-2 bg-[var(--hover-bg)] rounded-lg transition"
+                className="w-full flex cursor-pointer items-center justify-center gap-2 p-2 bg-[var(--hover-bg)] rounded-lg transition"
               >
                 {theme === "light" ? (
                   <Moon className="w-4 h-4" />

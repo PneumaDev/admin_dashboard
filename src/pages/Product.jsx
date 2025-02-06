@@ -18,6 +18,7 @@ import { useParams } from "react-router-dom";
 import { AdminContext } from "../context/AdminContext";
 import ProductActions from "../components/ProductActions";
 import axios from "axios";
+import { undraw } from "../assets/assets";
 
 export default function Product() {
   const [product, setProduct] = useState([]);
@@ -196,7 +197,7 @@ export default function Product() {
               <AdvancedImage
                 cldImg={image}
                 alt="Product"
-                className="w-full h-auto rounded-lg"
+                className="w-full h-auto lg:h-[90%] rounded-lg"
                 plugins={[lazyload()]}
               />
             )}
@@ -213,12 +214,10 @@ export default function Product() {
               <span className="text-4xl font-bold font-muktaVaani">
                 {product.price - (product.discount ? product.discount : 0)}
               </span>
-              {product.discount > 0 ? (
+              {product.discount > 0 && (
                 <span className="text-1xl font-bold font-muktaVaani line-through ml-2 px-2 rounded-md text-black bg-blue-300">
                   {product.price}
                 </span>
-              ) : (
-                <></>
               )}
             </p>
           </div>
