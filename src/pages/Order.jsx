@@ -165,7 +165,7 @@ const Order = () => {
             </h2>
             <div className="p-4 ">
               {order.items.map((item, index) => (
-                <OrderItem item={item} key={index} />
+                <OrderItem item={item} key={index} discount={order.discount} />
               ))}
             </div>
           </div>
