@@ -138,4 +138,4 @@ const inputClass =
 const labelClass =
     "block text-sm font-medium text-[var(--text-color)] font-yantramanav";
 
-export { inputClass, labelClass, generateSKU, logFormData, initialState, undraw };
+export { inputClass, labelClass, generateSKU, logFormData, initialState };
