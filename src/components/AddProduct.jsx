@@ -38,7 +38,14 @@ export default function AddProduct({
     } else {
       setSizes(["XS", "S", "M", "L", "XL", "XXL"]);
     }
-  }, [formData]);
+
+    setFormData((prevData) => ({
+      ...prevData,
+      sizes: [],
+    }));
+  }, [formData.subCategory]);
+
+  console.log(formData.sizes);
 
   useEffect(() => {
     setFormData((prevData) => ({ ...prevData, color: color.hex }));
@@ -48,6 +55,10 @@ export default function AddProduct({
   const handleSubmit = async (e) => {
     if (formData.sizes < 1) {
       return toast.error("Please add sizes", { id: "sizes" });
+    }
+
+    if (formData.image < 1) {
+      return toast.error("Please add an Image", { id: "sizes" });
     }
 
     try {
@@ -107,7 +118,7 @@ export default function AddProduct({
     } else {
       setFormData((prevState) => ({
         ...prevState,
-        [name]: type === "number" ? (value === "" ? 0 : Number(value)) : value,
+        [name]: type === "number" ? (value === "" ? "" : Number(value)) : value,
       }));
     }
   };
@@ -148,7 +159,7 @@ export default function AddProduct({
               type={type}
               name={name}
               id={id}
-              value={formData[name] ?? (type === "number" ? 0 : "")}
+              value={formData[name] ?? ""}
               onChange={handleChange}
               required={name === "discount" ? false : true}
               disabled={loading}
@@ -396,7 +407,7 @@ export default function AddProduct({
                           // Create Cloudinary image instance
                           const cldThumb = cloudinary
                             .image(publicId)
-                            .resize(scale(150));
+                            .resize(scale(75));
 
                           return (
                             <AdvancedImage
@@ -417,7 +428,7 @@ export default function AddProduct({
                             removeImage(index);
                           }
                         }}
-                        className="absolute top-1 right-1 bg-gray-800 text-white rounded-full p-1"
+                        className="absolute top-1 cursor-pointer right-1 bg-gray-800 text-white rounded-full p-1"
                       >
                         <X size={16} />
                       </button>
