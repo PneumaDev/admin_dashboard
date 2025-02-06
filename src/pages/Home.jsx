@@ -11,15 +11,15 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AdminContext } from "../context/AdminContext";
+import { undraw } from "../assets/assets";
+import InfoMessage from "../components/InfoComponent";
 
 export default function Home() {
-  // const [loading, setLoading] = useState(true);
-
   const { orders, navigate, fetchAllOrders, loading, adminToken } =
     useContext(AdminContext);
 
   useEffect(() => {
-    if (adminToken && orders.length < 0) {
+    if (orders && orders.length === 0) {
       fetchAllOrders();
     }
   }, [adminToken]);
@@ -152,69 +152,80 @@ export default function Home() {
               </button>
             </Link>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="text-left text-sm justify-between text-gray-400 border-b rounded-b-md border-gray-600">
-                  <th className="pb-4  pl-4 pr-8">SN</th>
-                  <th className="pb-4  pr-16">Customer</th>
-                  <th className="pb-4  pr-32">Product</th>
-                  <th className="pb-4  pr-10">Amount</th>
-                  <th className="pb-4  pr-16">Status</th>
-                  <th className="pb-4  pr-10">Order ID</th>
-                </tr>
-              </thead>
-              <tbody className="text-sm gap-y-10">
-                {orders.slice(0, 5).map((order, index) => (
-                  <tr
-                    onClick={() => {
-                      navigate(`/orders/${order._id}`);
-                    }}
-                    key={index}
-                    className="m-4 pt-4 hover:bg-[var(--hover-bg)] hover:shadow-lg transition-all duration-300 cursor-pointer"
-                  >
-                    <td className="py-4 pl-4 text-[var(--text-color)] transition-standard rounded-l-md font-muktaVaani">
-                      {index + 1}.
-                    </td>
-
-                    <td className="py-4 text-[var(--text-color)] transition-standard font-muktaVaani">
-                      {order.address.firstName} {order.address.lastName}
-                    </td>
-                    <td className="py-4 text-gray-400">
-                      <span className="text-[var(--text-color)] transition-standard font-muktaVaani line-clamp-1">
-                        {order.items[0].name}
-                      </span>
-                    </td>
-                    <td className="py-4 text-[var(--text-color)] transition-standard font-muktaVaani">
-                      Ksh. {order.amount}
-                    </td>
-                    <td className="py-4">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium transition-all duration-300 font-muktaVaani ${
-                          order.status === "Delivered"
-                            ? "bg-green-200 text-green-900 hover:bg-green-300"
-                            : order.status === "Shipped"
-                            ? "bg-blue-100 text-blue-800 hover:bg-blue-200"
-                            : order.status === "Packing"
-                            ? "bg-orange-100 text-orange-600 hover:bg-orange-200"
-                            : order.status === "Pending"
-                            ? "bg-orange-100 text-orange-800 hover:bg-orange-200"
-                            : order.status === "Confirmed"
-                            ? "bg-teal-100 text-teal-800 hover:bg-teal-200"
-                            : "bg-red-100 text-red-800 hover:bg-red-200"
-                        }`}
-                      >
-                        {order.status}
-                      </span>
-                    </td>
-                    <td className="py-4 text-[var(--text-color)] transition-standard rounded-r-md font-muktaVaani">
-                      {order._id.slice(0, 10)}...
-                    </td>
+          {orders ? (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-left text-sm justify-between text-gray-400 border-b rounded-b-md border-gray-600">
+                    <th className="pb-4  pl-4 pr-8">SN</th>
+                    <th className="pb-4  pr-16">Customer</th>
+                    <th className="pb-4  pr-32">Product</th>
+                    <th className="pb-4  pr-10">Amount</th>
+                    <th className="pb-4  pr-16">Status</th>
+                    <th className="pb-4  pr-10">Order ID</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                {orders && (
+                  <tbody className="text-sm gap-y-10">
+                    {orders.slice(0, 5).map((order, index) => (
+                      <tr
+                        onClick={() => {
+                          navigate(`/orders/${order._id}`);
+                        }}
+                        key={index}
+                        className="m-4 pt-4 hover:bg-[var(--hover-bg)] hover:shadow-lg transition-all duration-300 cursor-pointer"
+                      >
+                        <td className="py-4 pl-4 text-[var(--text-color)] transition-standard rounded-l-md font-muktaVaani">
+                          {index + 1}.
+                        </td>
+
+                        <td className="py-4 text-[var(--text-color)] transition-standard font-muktaVaani">
+                          {order.address.firstName} {order.address.lastName}
+                        </td>
+                        <td className="py-4 text-gray-400">
+                          <span className="text-[var(--text-color)] transition-standard font-muktaVaani line-clamp-1">
+                            {order.items[0].name}
+                          </span>
+                        </td>
+                        <td className="py-4 text-[var(--text-color)] transition-standard font-muktaVaani">
+                          Ksh. {order.amount}
+                        </td>
+                        <td className="py-4">
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium transition-all duration-300 font-muktaVaani ${
+                              order.status === "Delivered"
+                                ? "bg-green-200 text-green-900 hover:bg-green-300"
+                                : order.status === "Shipped"
+                                ? "bg-blue-100 text-blue-800 hover:bg-blue-200"
+                                : order.status === "Packing"
+                                ? "bg-orange-100 text-orange-600 hover:bg-orange-200"
+                                : order.status === "Pending"
+                                ? "bg-orange-100 text-orange-800 hover:bg-orange-200"
+                                : order.status === "Confirmed"
+                                ? "bg-teal-100 text-teal-800 hover:bg-teal-200"
+                                : "bg-red-100 text-red-800 hover:bg-red-200"
+                            }`}
+                          >
+                            {order.status}
+                          </span>
+                        </td>
+                        <td className="py-4 text-[var(--text-color)] transition-standard rounded-r-md font-muktaVaani">
+                          {order._id.slice(0, 10)}...
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                )}
+              </table>
+            </div>
+          ) : (
+            <div className="flex justify-center">
+              <InfoMessage
+                title={"No Orders Made"}
+                message={"Please wait till orders are made"}
+              />
+            </div>
+          )}
         </div>
 
         {/* Notifications */}
@@ -223,7 +234,7 @@ export default function Home() {
             <h3 className="font-yantramanav text-md md:text-lg font-semibold text-[var(--text-color)]">
               Recent Notifications
             </h3>
-            <button className="text-blue-400 hover:text-blue-300 text-sm font-medium">
+            <button className="text-blue-400 hover:text-blue-300 text-sm cursor-pointer font-medium">
               Mark All Read
             </button>
           </div>

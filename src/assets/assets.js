@@ -1,8 +1,6 @@
 import axios from "axios";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-import undraw from "../images/undraw.svg";
-
 export const fields = [
     {
         label: "Name:",
