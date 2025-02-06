@@ -2,11 +2,11 @@ import React, { useContext, useMemo } from "react";
 import { AdvancedImage } from "@cloudinary/react";
 import { lazyload } from "@cloudinary/react";
 import { scale } from "@cloudinary/url-gen/actions/resize";
-import { Cloudinary } from "@cloudinary/url-gen";
+
 import { AdminContext } from "../context/AdminContext";
 
 export default function OrderItem({ item }) {
-  const { cloudinary } = useContext(AdminContext);
+  const { cloudinary, navigate } = useContext(AdminContext);
 
   // Memoize processed Cloudinary images
   const processedImages = useMemo(() => {
@@ -42,16 +42,19 @@ export default function OrderItem({ item }) {
       {/* Product Details */}
       <div className="flex-1 space-y-2">
         {/* Product Name */}
-        <p className="font-medium text-[var(--text-color)] line-clamp-1 font-muktaVaani">
+        <p
+          className="font-medium text-[var(--text-color)] line-clamp-1 font-muktaVaani border-b flex w-fit cursor-pointer mb-1"
+          onClick={() => navigate(`/products/${item._id}`)}
+        >
           {item.name}
         </p>
         {/* Quantity, Size, and Price */}
         <div className="flex items-center text-sm text-gray-400 font-yantramanav">
           <p>Qty: {item.quantity}</p>
-          <span className="mx-2">•</span>
+          <span className="mx-1 font-bold">•</span>
           <p>Size: {item.size}</p>
-          <span className="mx-2">•</span>
-          <p>KSH {item.price.toLocaleString()}</p>
+          <span className="mx-1 font-bold">•</span>
+          <p>Ksh. {(item.price - item.discount).toLocaleString()}</p>
         </div>
         {/* Product Description */}
         <p className="text-sm text-gray-400 font-imprima line-clamp-2">
