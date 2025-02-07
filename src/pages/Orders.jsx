@@ -4,6 +4,7 @@ import { Edit, FileUp, Search, Trash } from "lucide-react";
 import { AdminContext } from "../context/AdminContext";
 import Table from "../components/Table";
 import InfoMessage from "../components/InfoComponent";
+import Spinner from "../components/Spinner";
 
 export default function Orders() {
   const [openModal, setOpenModal] = useState(false);
@@ -31,11 +32,7 @@ export default function Orders() {
   }, [adminToken, orders]);
 
   if (loading && orders) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-500"></div>
-      </div>
-    );
+    return <Spinner />;
   }
 
   return (
