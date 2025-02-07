@@ -13,6 +13,7 @@ const AdminContextProvider = (props) => {
   const [itemData, setItemData] = useState({});
   const [openModal, setOpenModal] = useState(false);
   const [orders, setOrders] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [adminToken, setAdminToken] = useState(null);
@@ -101,6 +102,24 @@ const AdminContextProvider = (props) => {
     }
   };
 
+  const fetchCustomers = async () => {
+    setLoading(true);
+    if (!adminToken) return setLoading(false);
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/user/list`,
+        {},
+        { headers: { token: adminToken } }
+      );
+      setCustomers(response.data.users);
+    } catch (error) {
+      console.log(error.message);
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const fetchAllOrders = async () => {
     if (!adminToken) return;
     setLoading(true);
@@ -153,6 +172,8 @@ const AdminContextProvider = (props) => {
     openModal,
     setItemData,
     setOpenModal,
+    customers,
+    fetchCustomers,
   };
 
   return (
