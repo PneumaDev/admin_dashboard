@@ -18,6 +18,7 @@ import { useParams } from "react-router-dom";
 import { AdminContext } from "../context/AdminContext";
 import ProductActions from "../components/ProductActions";
 import axios from "axios";
+import Spinner from "../components/Spinner";
 
 export default function Product() {
   const [product, setProduct] = useState([]);
@@ -101,11 +102,7 @@ export default function Product() {
   }
 
   if (loading && !image) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-500"></div>
-      </div>
-    );
+    return <Spinner />;
   }
 
   if (!product && product.length < 1 && !loading) {
