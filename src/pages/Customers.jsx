@@ -4,6 +4,7 @@ import InfoMessage from "../components/InfoComponent";
 import Modal from "../components/Modal";
 import { AdminContext } from "../context/AdminContext";
 import { Search } from "lucide-react";
+import Spinner from "../components/Spinner";
 
 export default function Customers() {
   // const [loading, setLoading] = useState(true);
@@ -20,11 +21,7 @@ export default function Customers() {
   }, [adminToken, customers]);
 
   if (loading && customers) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-500"></div>
-      </div>
-    );
+    return <Spinner />;
   }
 
   const columnHeader = {

@@ -4,6 +4,7 @@ import Table from "../components/Table";
 import { AdminContext } from "../context/AdminContext";
 import ProductActions from "../components/ProductActions";
 import InfoMessage from "../components/InfoComponent";
+import Spinner from "../components/Spinner";
 
 export default function ProductsPage() {
   const [fetchingProducts, setFetchingProducts] = useState(true);
@@ -41,11 +42,7 @@ export default function ProductsPage() {
   };
 
   if (fetchingProducts) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-500"></div>
-      </div>
-    );
+    return <Spinner />;
   }
 
   return (
