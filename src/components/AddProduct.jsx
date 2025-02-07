@@ -445,7 +445,10 @@ export default function AddProduct({
         {/* Sizes Input */}
         <div className="space-y-2">
           <label htmlFor="sizes" className={labelClass}>
-            Sizes
+            Sizes:{" "}
+            <span className="text-sm text-gray-500">
+              ({formData.subCategory})
+            </span>
           </label>
           <div className="flex gap-2 flex-wrap">
             {sizes.map((size) => (
