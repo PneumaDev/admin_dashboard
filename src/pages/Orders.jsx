@@ -62,7 +62,7 @@ export default function Orders() {
         </div>
 
         {/* Products Table */}
-        {orders ? (
+        {orders.length > 0 ? (
           <Table
             columnHeader={columnHeader}
             products={orders}
