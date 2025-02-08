@@ -19,14 +19,26 @@ import { AdminContext } from "../context/AdminContext";
 import ProductActions from "../components/ProductActions";
 import axios from "axios";
 import Spinner from "../components/Spinner";
+import Modal from "../components/Modal";
+import toast from "react-hot-toast";
+import InfoMessage from "../components/InfoComponent";
+import { AlertTriangle } from "lucide-react";
 
 export default function Product() {
   const [product, setProduct] = useState([]);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(true);
   const { productId } = useParams();
-  const { products, cloudinary, productAction, backendUrl } =
-    useContext(AdminContext);
+  const {
+    products,
+    cloudinary,
+    productAction,
+    backendUrl,
+    adminToken,
+    navigate,
+    fetchProducts,
+  } = useContext(AdminContext);
 
   const fetchProduct = async () => {
     try {
@@ -76,6 +88,43 @@ export default function Product() {
     }
   }, [productId, product]);
 
+  const removeProduct = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        backendUrl + "/api/product/remove",
+        { id: productId },
+        { headers: { token: adminToken } }
+      );
+
+      if (response.data.success) {
+        await fetchProducts();
+        navigate("/products");
+        return "Product removed successfully!";
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      throw new Error("Failed to remove product.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteProduct = async () => {
+    if (loading) return;
+    toast.promise(
+      removeProduct(),
+      {
+        loading: "Removing product...",
+        success: "Product removed successfully! 🎉",
+        error: "Failed to remove product. ❌",
+      },
+      { id: "delete product" }
+    );
+  };
+
   const renderRatingStars = () => {
     return [...Array(5)].map((_, index) => (
       <Star
@@ -105,12 +154,22 @@ export default function Product() {
     return <Spinner />;
   }
 
-  if (!product && product.length < 1 && !loading) {
+  console.log(product);
+
+  if (!product) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p className="text-[var(--text-color)] transition-standard text-lg">
-          Order not found
-        </p>
+      <div className="flex flex-col items-center justify-center w-full text-center min-h-[50vh] px-4">
+        <AlertTriangle className="text-red-500 w-12 h-12 mb-3" />
+        <h2 className="text-lg text-[var(--text-color)] font-muktaVaani">
+          Product <span className="font-bold">{productId}</span> has been
+          deleted.
+        </h2>
+        <div className="w-fit bg-red-100 border border-red-400 text-red-700 rounded-lg p-4 mt-4">
+          <InfoMessage
+            title="No Products Found"
+            message="Please add some products!"
+          />
+        </div>
       </div>
     );
   }
@@ -152,7 +211,10 @@ export default function Product() {
             <Edit size={18} />
             Edit Product
           </button>
-          <button className="bg-red-100 cursor-pointer text-red-800 px-4 font-imprima py-2 rounded-lg hover:bg-red-200 transition-standard flex items-center gap-1">
+          <button
+            onClick={() => setConfirmDelete(true)}
+            className="bg-red-100 cursor-pointer text-red-800 px-4 font-imprima py-2 rounded-lg hover:bg-red-200 transition-standard flex items-center gap-1"
+          >
             <Trash size={18} />
             Delete
           </button>
@@ -295,6 +357,25 @@ export default function Product() {
         </div>
       </div>
       <ProductActions />
+      <div className="w-1/3 flex">
+        <Modal
+          isOpen={confirmDelete}
+          onSubmitHandler={deleteProduct}
+          onClose={() => setConfirmDelete(false)}
+          button1={"Proceed"}
+          button2={"Cancel"}
+          title={"Confirm Delete"}
+        >
+          <div className="flex flex-col justify-center items-center gap-y-2">
+            <p className="">Are you sure you want to remove this product?</p>
+            <div className="font-muktaVaani font-bold flex justify-between gap-x-2">
+              <AlertTriangle className="text-red-500 w-5 h-5" />
+              <p className="">This action can not be undone</p>
+              <AlertTriangle className="text-red-500 w-5 h-5" />
+            </div>
+          </div>
+        </Modal>
+      </div>
     </div>
   );
 }
