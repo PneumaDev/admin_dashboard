@@ -61,17 +61,7 @@ export default function Product() {
   };
 
   useEffect(() => {
-    if (products && products.length > 0) {
-      const selectedProduct = products.find(
-        (product) => product._id === productId
-      );
-      if (selectedProduct) {
-        setProduct(selectedProduct);
-      }
-    } else {
-      fetchProduct();
-    }
-
+    fetchProduct();
     if (product?.image?.length > 0) {
       const publicId = product.image[0]
         .split("/")
@@ -154,8 +144,6 @@ export default function Product() {
     return <Spinner />;
   }
 
-  console.log(product);
-
   if (!product) {
     return (
       <div className="flex flex-col items-center justify-center w-full text-center min-h-[50vh] px-4">
@@ -166,7 +154,7 @@ export default function Product() {
         </h2>
         <div className="w-fit bg-red-100 border border-red-400 text-red-700 rounded-lg p-4 mt-4">
           <InfoMessage
-            title="No Products Found"
+            title="No Product Found"
             message="Please add some products!"
           />
         </div>
