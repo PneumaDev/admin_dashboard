@@ -1,6 +1,14 @@
 import axios from "axios";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
+
+const subcategoryOptions = {
+    Men: ["Topwear", "Bottomwear", "Shoes", "Innerwear", "Accessories"],
+    Women: ["Dresses", "Skirts", "Tops", "Shoes", "Innerwear", "Accessories"],
+    Kids: ["Clothing", "Shoes", "Toys", "Accessories"],
+    Unisex: ["Shoes", "Hats", "Scarves", "Jackets"],
+};
+
 export const fields = [
     {
         label: "Name:",
@@ -138,4 +146,4 @@ const inputClass =
 const labelClass =
     "block text-sm font-medium text-[var(--text-color)] font-yantramanav";
 
-export { inputClass, labelClass, generateSKU, logFormData, initialState };
+export { inputClass, labelClass, generateSKU, logFormData, initialState, subcategoryOptions };
