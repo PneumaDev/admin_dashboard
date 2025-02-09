@@ -96,8 +96,6 @@ const AdminContextProvider = (props) => {
     }
   };
 
-  console.log(products);
-
   const logIn = async (email, password) => {
     try {
       const response = await axios.post(backendUrl + "/api/user/admin", {
