@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Modal from "./Modal";
 import {
   fields,
@@ -6,6 +6,7 @@ import {
   inputClass,
   labelClass,
   onSubmit,
+  subcategoryOptions,
 } from "../assets/assets";
 import { ImagePlus, X } from "lucide-react";
 import { AdvancedImage } from "@cloudinary/react";
@@ -31,21 +32,25 @@ export default function AddProduct({
   const { adminToken, setOpenModal, setItemData, cloudinary } =
     useContext(AdminContext);
 
+  const prevSubCategory = useRef(formData.subCategory);
+
   // <------------Handle Side Effects------------>
   useEffect(() => {
-    if (formData.subCategory === "Shoes") {
-      setSizes(["5", "6", "7", "8", "9", "10", "11", "12"]);
-    } else {
-      setSizes(["XS", "S", "M", "L", "XL", "XXL"]);
+    if (prevSubCategory.current !== formData.subCategory) {
+      if (formData.subCategory === "Shoes") {
+        setSizes(["5", "6", "7", "8", "9", "10", "11", "12"]);
+      } else {
+        setSizes(["XS", "S", "M", "L", "XL", "XXL"]);
+      }
+
+      setFormData((prevData) => ({
+        ...prevData,
+        sizes: [],
+      }));
     }
 
-    setFormData((prevData) => ({
-      ...prevData,
-      sizes: [],
-    }));
+    prevSubCategory.current = formData.subCategory;
   }, [formData.subCategory]);
-
-  console.log(formData.sizes);
 
   useEffect(() => {
     setFormData((prevData) => ({ ...prevData, color: color.hex }));
@@ -85,13 +90,6 @@ export default function AddProduct({
   };
 
   // <------------Component Functions------------>
-  const subcategoryOptions = {
-    Men: ["Topwear", "Bottomwear", "Shoes", "Innerwear", "Accessories"],
-    Women: ["Dresses", "Skirts", "Tops", "Shoes", "Innerwear", "Accessories"],
-    Kids: ["Clothing", "Shoes", "Toys", "Accessories"],
-    Unisex: ["Shoes", "Hats", "Scarves", "Jackets"],
-  };
-
   const selectedSizes = [];
 
   const handleChange = (e) => {
@@ -101,10 +99,7 @@ export default function AddProduct({
       const selectedFiles = Array.from(files);
 
       setFormData((prevState) => {
-        // Combine previous + newly selected images
         const allImages = [...prevState.image, ...selectedFiles];
-
-        // Remove duplicates (check by file name)
         const uniqueImages = Array.from(
           new Map(allImages.map((file) => [file.name, file])).values()
         );
@@ -142,7 +137,13 @@ export default function AddProduct({
   };
 
   return (
-    <form className="space-y-6 p-6 rounded-xl">
+    <form
+      className="space-y-6 p-6 rounded-xl"
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit();
+      }}
+    >
       <h2 className="text-2xl font-bold text-[var(--text-color)] mb-6 font-muktaVaani">
         {action === "edit" ? "Update Product Details" : "Add New Product"}
       </h2>
@@ -189,7 +190,7 @@ export default function AddProduct({
           >
             {["Men", "Women", "Kids", "Unisex"].map((category) => (
               <option
-                value="Men"
+                value={category}
                 key={category}
                 className="bg-[var(--bg-color)]"
               >
@@ -308,15 +309,18 @@ export default function AddProduct({
                 onClick={() => !loading && setColorModal(true)}
               ></div>
 
-              <Modal
-                onSubmitHandler={() => setColorModal(false)}
-                isOpen={openColorModal}
-                title={"Pick a color"}
-                button1={"Set"}
-                cancelButton={false}
-              >
-                <ColorPicker color={color} onChange={setColor} />
-              </Modal>
+              <div className="">
+                <Modal
+                  onSubmitHandler={() => setColorModal(false)}
+                  isOpen={openColorModal}
+                  title={"Pick a color"}
+                  button1={"Set"}
+                  cancelButton={false}
+                  width={true}
+                >
+                  <ColorPicker color={color} onChange={setColor} />
+                </Modal>
+              </div>
             </div>
           </div>
         </div>
@@ -497,12 +501,6 @@ export default function AddProduct({
         </button>
 
         <button
-          onClick={(e) => {
-            e.preventDefault();
-            if (!loading) {
-              handleSubmit();
-            }
-          }}
           type="submit"
           className={`bg-green-600 ${
             loading ? "cursor-wait" : " cursor-pointer"

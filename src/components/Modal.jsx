@@ -1,3 +1,5 @@
+import { X } from "lucide-react";
+
 export default function Modal({
   cancelButton = true,
   isOpen,
@@ -8,18 +10,24 @@ export default function Modal({
   buttonsVisible = true,
   button1,
   button2,
+  width,
 }) {
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-[rgba(0,0,0,0.7)] px-4">
-      <div className="bg-[var(--bg-color)] rounded-lg shadow-xl max-w-5xl lg:max-w-7xl p-8 relative max-h-[90vh] overflow-y-auto">
+      <div
+        className={`bg-[var(--bg-color)] rounded-lg  shadow-xl ${
+          width ? "md:w-1/3 w-80" : ""
+        }  max-w-5xl lg:max-w-7xl p-8 relative max-h-[90vh] overflow-y-auto`}
+      >
         {cancelButton && (
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 text-gray-600 hover:text-gray-800 cursor-pointer"
+            className="absolute top-3 right-3 text-[var(--text-color)] hover:scale-110 transition-transform duration-200 cursor-pointer"
+            aria-label="Close modal"
           >
-            &times;
+            <X className="h-6 w-6" />
           </button>
         )}
         <h2 className="font-bold text-xl text-center mb-4 font-muktaVaani border-b-[1px] pb-2">
