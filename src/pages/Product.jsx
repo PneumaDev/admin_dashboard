@@ -355,10 +355,12 @@ export default function Product() {
           title={"Confirm Delete"}
         >
           <div className="flex flex-col justify-center items-center gap-y-2">
-            <p className="">Are you sure you want to remove this product?</p>
+            <p className="font-imprima">
+              Are you sure you want to remove this product?
+            </p>
             <div className="font-muktaVaani font-bold flex justify-between gap-x-2">
               <AlertTriangle className="text-red-500 w-5 h-5" />
-              <p className="">This action can not be undone</p>
+              <p className="font-muktaVaani">This action CAN NOT be undone</p>
               <AlertTriangle className="text-red-500 w-5 h-5" />
             </div>
           </div>
