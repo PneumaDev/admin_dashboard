@@ -5,9 +5,13 @@ import { AdminContext } from "../context/AdminContext";
 import ProductActions from "../components/ProductActions";
 import InfoMessage from "../components/InfoComponent";
 import Spinner from "../components/Spinner";
+import Modal from "../components/Modal";
+import SearchProduct from "../components/SearchProduct";
 
 export default function ProductsPage() {
   const [fetchingProducts, setFetchingProducts] = useState(true);
+  const [openSearch, setOpenSearch] = useState(false);
+  const [performedSearch, setPerformedSearch] = useState(false);
 
   const { products, fetchProducts, navigate, productAction, adminToken } =
     useContext(AdminContext);
@@ -51,12 +55,17 @@ export default function ProductsPage() {
         {/* Header */}
         <div className="">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-[var(--text-color)] font-yantramanav">
-              Products
-            </h1>
+            <div className="flex flex-col ">
+              <h1 className="text-2xl font-bold text-[var(--text-color)] font-yantramanav">
+                Products
+              </h1>
+            </div>
             <div className="flex space-x-4">
               {products && (
-                <button className="bg-blue-600 cursor-pointer text-white px-2 md:px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 font-imprima">
+                <button
+                  onClick={() => setOpenSearch(true)}
+                  className="bg-blue-600 cursor-pointer text-white px-2 md:px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 font-imprima"
+                >
                   <Search className="w-4 h-4 md:mr-2" />
                   <span className="hidden md:flex ">Search Product</span>
                 </button>
@@ -68,8 +77,36 @@ export default function ProductsPage() {
                 <Plus className="w-4 h-4 md:mr-2" />
                 <span className="hidden md:flex ">Add Product</span>
               </button>
+              {performedSearch && (
+                <button
+                  onClick={async () => {
+                    setFetchingProducts(true);
+                    try {
+                      await fetchProducts();
+                      setPerformedSearch(false);
+                    } catch (error) {
+                      console.log(error);
+                    } finally {
+                      setFetchingProducts(false);
+                    }
+                  }}
+                  className="text-base text-black bg-green-500 px-2 rounded-md font-yantramanav"
+                >
+                  RESET
+                </button>
+              )}
             </div>
           </div>
+        </div>
+
+        <div className="mb-2">
+          {performedSearch && (
+            <div className="flex gap-x-3 items-start">
+              <h3 className="text-xl text-gray-500 font-imprima line-clamp-1">
+                Search results:
+              </h3>
+            </div>
+          )}
         </div>
 
         {products ? (
@@ -145,6 +182,16 @@ export default function ProductsPage() {
           </div>
         )}
 
+        <Modal
+          isOpen={openSearch}
+          onClose={() => setOpenSearch(false)}
+          title={"Set search criteria"}
+        >
+          <SearchProduct
+            closeModal={setOpenSearch}
+            setPerformedSearch={setPerformedSearch}
+          />
+        </Modal>
         <ProductActions />
       </div>
     </div>
