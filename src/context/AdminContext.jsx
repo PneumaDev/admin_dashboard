@@ -62,10 +62,25 @@ const AdminContextProvider = (props) => {
     }
   };
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (filters) => {
     if (!adminToken) return;
+
     try {
-      const response = await axios.get(backendUrl + "/api/product/list");
+      let queryParams = new URLSearchParams(filters).toString();
+
+      let fields = "name,quantity,category";
+
+      // Add fields parameter to query
+      if (queryParams) {
+        queryParams += `&fields=${fields}`;
+      } else {
+        queryParams = `fields=${fields}`;
+      }
+
+      const response = await axios.get(
+        `${backendUrl}/api/product/list?${queryParams}`
+      );
+
       if (response.data.success) {
         if (response.data.products.length < 1) {
           setProducts(null);
@@ -80,6 +95,8 @@ const AdminContextProvider = (props) => {
       toast.error(error.message);
     }
   };
+
+  console.log(products);
 
   const logIn = async (email, password) => {
     try {
