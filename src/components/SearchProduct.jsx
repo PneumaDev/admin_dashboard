@@ -65,11 +65,15 @@ const SearchProduct = ({ closeModal, setPerformedSearch }) => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    toast.promise(search(), {
-      loading: "Searching...",
-      success: "Search Complete",
-      error: "Error performing search",
-    });
+    toast.promise(
+      search(),
+      {
+        loading: "Searching...",
+        success: "Search Complete",
+        error: "Error performing search",
+      },
+      { id: "searcherror" }
+    );
   };
 
   return (
@@ -166,7 +170,9 @@ const SearchProduct = ({ closeModal, setPerformedSearch }) => {
               value={filters.minPrice}
               onChange={handleChange}
               disabled={loading}
-              className={`${inputClass} w-full`}
+              className={`${inputClass} ${
+                loading ? "cursor-not-allowed bg-gray-500" : "bg-transparent"
+              }`}
             />
             <input
               type="number"
@@ -176,7 +182,9 @@ const SearchProduct = ({ closeModal, setPerformedSearch }) => {
               value={filters.maxPrice}
               onChange={handleChange}
               disabled={loading}
-              className={`${inputClass} w-full`}
+              className={`${inputClass} ${
+                loading ? "cursor-not-allowed bg-gray-500" : "bg-transparent"
+              }`}
             />
           </div>
         </div>
