@@ -31,7 +31,6 @@ export default function Product() {
   const [loading, setLoading] = useState(true);
   const { productId } = useParams();
   const {
-    products,
     cloudinary,
     productAction,
     backendUrl,
