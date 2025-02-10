@@ -17,6 +17,7 @@ const AdminContextProvider = (props) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [adminToken, setAdminToken] = useState(null);
+  const [performedSearch, setPerformedSearch] = useState(false);
   const [theme, setTheme] = useState(
     () => localStorage.getItem("theme") || "dark"
   );
@@ -187,6 +188,8 @@ const AdminContextProvider = (props) => {
     openModal,
     setItemData,
     setOpenModal,
+    performedSearch,
+    setPerformedSearch,
     customers,
     fetchCustomers,
   };
