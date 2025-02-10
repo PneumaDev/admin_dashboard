@@ -11,10 +11,18 @@ import SearchProduct from "../components/SearchProduct";
 export default function ProductsPage() {
   const [fetchingProducts, setFetchingProducts] = useState(true);
   const [openSearch, setOpenSearch] = useState(false);
-  const [performedSearch, setPerformedSearch] = useState(false);
 
-  const { products, fetchProducts, navigate, productAction, adminToken } =
-    useContext(AdminContext);
+  useEffect(() => {}, [location.pathname]);
+
+  const {
+    products,
+    fetchProducts,
+    performedSearch,
+    setPerformedSearch,
+    navigate,
+    productAction,
+    adminToken,
+  } = useContext(AdminContext);
 
   useEffect(() => {
     const loadProducts = async () => {
