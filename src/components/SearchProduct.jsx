@@ -21,7 +21,15 @@ const SearchProduct = ({ closeModal, setPerformedSearch }) => {
 
   const subcategoryOptions = {
     All: ["All", "Topwear", "Bottomwear", "Shoes", "Accessories"],
-    Men: ["All", "Topwear", "Bottomwear", "Shoes", "Innerwear", "Accessories"],
+    Men: [
+      "All",
+      "Topwear",
+      "Bottomwear",
+      "Shoes",
+      "Innerwear",
+      "Accessories",
+      "Shorts",
+    ],
     Women: [
       "All",
       "Dresses",
