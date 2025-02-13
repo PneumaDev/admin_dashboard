@@ -52,11 +52,12 @@ export default function OrderItem({ item }) {
             <div className="flex-1 space-y-2">
               {/* Product Name */}
               <p
-                className="font-medium text-[var(--text-color)] line-clamp-1 font-muktaVaani border-b flex w-fit cursor-pointer mb-1"
+                className="font-medium text-[var(--text-color)] line-clamp-1 font-muktaVaani underline cursor-pointer mb-1 underline-offset-4"
                 onClick={() => navigate(`/products/${item._id}`)}
               >
                 {item.name}
               </p>
+
               {/* Quantity, Size, and Price */}
               <div className="flex items-center text-sm text-gray-400 font-yantramanav">
                 <p>Qty: {sizeObj.quantity}</p>
