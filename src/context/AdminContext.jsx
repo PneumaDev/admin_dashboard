@@ -78,7 +78,7 @@ const AdminContextProvider = (props) => {
         queryParams = `fields=${fields}`;
       }
 
-      const response = await axios.get(
+      const response = await axios.post(
         `${backendUrl}/api/product/list?${queryParams}`
       );
 
