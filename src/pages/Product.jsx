@@ -211,7 +211,7 @@ export default function Product() {
       <div className="flex sm:gap-12 flex-col sm:flex-row px-6">
         {/* Product images */}
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
-          <div className="flex scroller sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full">
+          <div className="flex scroller sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[16.7%] w-full">
             {product.image?.map((imgUrl, index) => {
               // Extract the public ID from the full URL
               const publicId = imgUrl
