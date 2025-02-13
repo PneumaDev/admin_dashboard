@@ -149,7 +149,7 @@ const AdminContextProvider = (props) => {
         if (response.data.orders.length < 1) {
           setOrders(null);
         } else {
-          setOrders(response.data.orders.reverse());
+          setOrders(response.data.orders);
         }
         setLoading(false);
       } else {
