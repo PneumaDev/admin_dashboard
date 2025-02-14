@@ -50,12 +50,14 @@ export default function ProductsPage() {
     status: "Status",
     inventory: "Inventory",
     category: "Category",
-    actions: "Actions",
+    actions: "Date",
   };
 
   if (fetchingProducts) {
     return <Spinner />;
   }
+
+  console.log(products);
 
   return (
     <div className="p-6 bg-[var(--card-bg)] rounded-lg">
@@ -161,22 +163,8 @@ export default function ProductsPage() {
                 <td className="px-6 py-4 whitespace-nowrap font-muktaVaani text-sm text-[var(--text-color)] transition-standard">
                   {itemData.category}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button
-                    className="text-blue-600 cursor-pointer hover:text-blue-500 mr-4"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      productAction("edit", itemData);
-                    }}
-                  >
-                    <Edit className="w-6 h-6" />
-                  </button>
-                  <button
-                    className="text-red-600 cursor-pointer hover:text-red-500"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Trash className="w-6 h-6" />
-                  </button>
+                <td className="px-6 py-4 whitespace-nowrap font-muktaVaani text-sm text-[var(--text-color)] transition-standard">
+                  {new Date(itemData.date).toLocaleDateString()}
                 </td>
               </tr>
             )}
