@@ -17,6 +17,8 @@ const AdminContextProvider = (props) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [adminToken, setAdminToken] = useState(null);
+  const [counts, setCounts] = useState([]);
+
   const [performedSearch, setPerformedSearch] = useState(false);
   const [theme, setTheme] = useState(
     () => localStorage.getItem("theme") || "dark"
@@ -63,23 +65,28 @@ const AdminContextProvider = (props) => {
     }
   };
 
-  const fetchProducts = async (filters) => {
+  const fetchProducts = async (filters = {}, page = 1, limit = 10) => {
     if (!adminToken) return;
 
     try {
-      let queryParams = new URLSearchParams(filters).toString();
+      let queryParams = new URLSearchParams();
 
-      let fields = "name,quantity,category";
+      // Add filters if they exist
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, value);
+        }
+      });
 
-      // Add fields parameter to query
-      if (queryParams) {
-        queryParams += `&fields=${fields}`;
-      } else {
-        queryParams = `fields=${fields}`;
-      }
+      // Add pagination parameters
+      queryParams.set("page", page);
+      queryParams.set("limit", limit);
+
+      // Add fields parameter
+      queryParams.set("fields", "name,quantity,category,date");
 
       const response = await axios.post(
-        `${backendUrl}/api/product/list?${queryParams}`
+        `${backendUrl}/api/product/list?${queryParams.toString()}`
       );
 
       if (response.data.success) {
@@ -89,11 +96,11 @@ const AdminContextProvider = (props) => {
           setProducts(response.data.products);
         }
       } else {
-        toast.error(response.data.message);
+        toast.error(response.data.message, { id: "products_error" });
       }
     } catch (error) {
       console.log(error);
-      toast.error(error.message);
+      toast.error(error.message, { id: "products_error" });
     }
   };
 
@@ -130,7 +137,7 @@ const AdminContextProvider = (props) => {
       setCustomers(response.data.users);
     } catch (error) {
       console.log(error.message);
-      toast.error(error.message);
+      toast.error(error.message, { id: "customers_error" });
     } finally {
       setLoading(false);
     }
@@ -153,11 +160,11 @@ const AdminContextProvider = (props) => {
         }
         setLoading(false);
       } else {
-        toast.error(response.data.message);
+        toast.error(response.data.message, { id: "order_error" });
       }
     } catch (error) {
       console.error("Failed to fetch orders:", error);
-      toast.error("Failed to fetch orders.");
+      toast.error("Failed to fetch orders.", { id: "order_error" });
     } finally {
       setLoading(false);
     }
@@ -192,6 +199,8 @@ const AdminContextProvider = (props) => {
     setPerformedSearch,
     customers,
     fetchCustomers,
+    counts,
+    setCounts,
   };
 
   return (
