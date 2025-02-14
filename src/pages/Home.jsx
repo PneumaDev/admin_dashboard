@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Users,
   ShoppingBag,
@@ -15,7 +15,7 @@ import InfoMessage from "../components/InfoComponent";
 import Spinner from "../components/Spinner";
 
 export default function Home() {
-  const { orders, navigate, fetchAllOrders, loading, adminToken } =
+  const { orders, navigate, fetchAllOrders, loading, adminToken, counts } =
     useContext(AdminContext);
 
   useEffect(() => {
@@ -27,28 +27,28 @@ export default function Home() {
   const stats = [
     {
       title: "Total Revenue",
-      value: "$124,563.00",
-      change: "+12.5%",
+      value: counts[3]?.total ?? 0,
+      change: counts[4]?.total ?? 0,
       isIncrease: true,
       icon: DollarSign,
     },
     {
       title: "Active Orders",
-      value: "45",
+      value: counts[2]?.total ?? 0,
       change: "+23.1%",
       isIncrease: true,
       icon: ShoppingBag,
     },
     {
-      title: "New Customers",
-      value: "156",
+      title: "Customers",
+      value: counts[0]?.total ?? 0,
       change: "-4.5%",
       isIncrease: false,
       icon: Users,
     },
     {
       title: "Product Stock",
-      value: "1,245",
+      value: counts[1]?.total ?? 0,
       change: "+8.2%",
       isIncrease: true,
       icon: Package,
@@ -128,7 +128,9 @@ export default function Home() {
               >
                 {stat.change}
               </span>
-              <span className="text-gray-400 text-sm ml-1">vs last month</span>
+              <span className="text-gray-400 text-sm ml-1">
+                potential revenue
+              </span>
             </div>
           </div>
         ))}
