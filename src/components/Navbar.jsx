@@ -14,6 +14,7 @@ import {
   Presentation,
 } from "lucide-react";
 import { AdminContext } from "../context/AdminContext";
+import axios from "axios";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,9 +22,19 @@ const Navbar = () => {
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const { logOut, theme, toggleTheme, navigate } = useContext(AdminContext);
+  const {
+    logOut,
+    theme,
+    toggleTheme,
+    navigate,
+    backendUrl,
+    counts,
+    setCounts,
+  } = useContext(AdminContext);
 
   useEffect(() => {
+    getCountTotal();
+
     const handleResize = () => {
       const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
@@ -36,6 +47,15 @@ const Navbar = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const getCountTotal = async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/user/count`);
+      setCounts(response.data.counts);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
     // setIsCollapsed(!isCollapsed);
@@ -43,9 +63,24 @@ const Navbar = () => {
 
   const NavItems = [
     { icon: Home, label: "Home", path: "/", count: null },
-    { icon: ShoppingCart, label: "Orders", path: "/orders", count: 5 },
-    { icon: Package, label: "Products", path: "/products", count: 24 },
-    { icon: Users, label: "Customers", path: "/customers", count: 128 },
+    {
+      icon: ShoppingCart,
+      label: "Orders",
+      path: "/orders",
+      count: counts[2]?.total ?? 0,
+    },
+    {
+      icon: Package,
+      label: "Products",
+      path: "/products",
+      count: counts[1]?.total ?? 0,
+    },
+    {
+      icon: Users,
+      label: "Customers",
+      path: "/customers",
+      count: counts[0]?.total ?? 0,
+    },
     { icon: ImageIcon, label: "Media", path: "/media", count: null },
     { icon: Presentation, label: "Metrics", path: "/metrics", count: null },
   ];
