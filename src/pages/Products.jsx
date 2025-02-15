@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Edit, Trash, Plus, Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import Table from "../components/Table";
 import { AdminContext } from "../context/AdminContext";
 import ProductActions from "../components/ProductActions";
