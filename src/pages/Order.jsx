@@ -4,30 +4,34 @@ import { useParams } from "react-router-dom";
 import { AdminContext } from "../context/AdminContext";
 import OrderItem from "../components/OrderItem";
 import Spinner from "../components/Spinner";
+import axios from "axios";
 
 const Order = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const { orderId } = useParams();
-  const { orders } = useContext(AdminContext);
+  const { orders, backendUrl, adminToken } = useContext(AdminContext);
 
   useEffect(() => {
-    // Simulate loading state and find the order
-    setLoading(true);
-    const timeout = setTimeout(() => {
-      if (orders && orders.length > 0) {
-        const selectedOrder = orders.find((order) => order._id === orderId);
-        if (selectedOrder) {
-          setOrder(selectedOrder);
-        }
-      }
-      if (order) {
-        setLoading(false);
-      }
-    });
-
-    return () => clearTimeout(timeout);
+    fetchOrder();
+    if (order) {
+      setLoading(false);
+    }
   }, [orders, orderId]);
+
+  const fetchOrder = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/order/single`,
+        { orderId },
+        { headers: { token: adminToken } }
+      );
+      if (response.data.success) {
+        setOrder(response.data.order);
+      }
+    } catch (error) {}
+  };
 
   if (loading && !order) {
     return <Spinner />;
