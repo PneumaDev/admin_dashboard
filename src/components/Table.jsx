@@ -1,9 +1,17 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AdminContext } from "../context/AdminContext";
 
-export default function Table({ columnHeader, products, renderRow }) {
+export default function Table({
+  columnHeader,
+  products,
+  renderRow,
+  fetchMoreData,
+  count,
+}) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const { performedSearch } = useContext(AdminContext);
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -16,6 +24,13 @@ export default function Table({ columnHeader, products, renderRow }) {
       setCurrentPage(page);
     }
   };
+
+  // Fetch more data when on the last page and more data is available
+  useEffect(() => {
+    if (currentPage === totalPages && products.length <= count) {
+      fetchMoreData(currentPage);
+    }
+  }, [currentPage, totalPages, count, fetchMoreData]);
 
   return (
     <div className="rounded-lg shadow overflow-hidden">
@@ -44,6 +59,7 @@ export default function Table({ columnHeader, products, renderRow }) {
       {/* Pagination */}
       <div className="border-t border-gray-200 bg-[var(--table-header)] px-4 py-3 sm:px-6">
         <div className="flex items-center justify-between">
+          {/* Mobile Pagination (Previous & Next Only) */}
           <div className="flex-1 flex items-center justify-between sm:hidden">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
@@ -60,6 +76,8 @@ export default function Table({ columnHeader, products, renderRow }) {
               Next
             </button>
           </div>
+
+          {/* Desktop Pagination (Numbered) */}
           <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <p className="text-sm text-[var(--text-color)] font-yantramanav">
               Showing{" "}
@@ -67,31 +85,46 @@ export default function Table({ columnHeader, products, renderRow }) {
               <span className="font-medium">
                 {Math.min(indexOfLastItem, products.length)}
               </span>{" "}
-              of <span className="font-medium">{products.length}</span> results
+              of{" "}
+              <span className="font-medium">
+                {performedSearch ? products.length : count}
+              </span>{" "}
+              results
             </p>
             <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+              {/* Previous Button */}
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="relative inline-flex items-center text-black px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium transition-standard hover:bg-gray-50 disabled:opacity-50"
+                className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-black transition-standard hover:bg-gray-50 disabled:opacity-50"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <button
-                    key={page}
-                    onClick={() => handlePageChange(page)}
-                    className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                      currentPage === page
-                        ? "bg-gray-800 border-blue-500 text-white"
-                        : "bg-gray-400 border-gray-300 text-[var(--text-color)] transition-standard hover:text-[var(--bg-color)]"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                )
+
+              {/* Page Numbers - Only Show Previous, Current, and Next */}
+              {currentPage > 1 && (
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  className="relative inline-flex items-center px-4 py-2 border text-sm font-medium bg-gray-400 border-gray-300 text-[var(--text-color)] transition-standard hover:text-[var(--bg-color)]"
+                >
+                  {currentPage - 1}
+                </button>
               )}
+
+              <button className="relative inline-flex items-center px-4 py-2 border text-sm font-medium bg-gray-800 border-blue-500 text-white">
+                {currentPage}
+              </button>
+
+              {currentPage < totalPages && (
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  className="relative inline-flex items-center px-4 py-2 border text-sm font-medium bg-gray-400 border-gray-300 text-[var(--text-color)] transition-standard hover:text-[var(--bg-color)]"
+                >
+                  {currentPage + 1}
+                </button>
+              )}
+
+              {/* Next Button */}
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
