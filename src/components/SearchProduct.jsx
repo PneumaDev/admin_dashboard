@@ -12,6 +12,7 @@ const SearchProduct = ({ closeModal, setPerformedSearch }) => {
     maxPrice: "",
     bestSeller: "",
     inStock: "",
+    limit: 1000,
   };
 
   const [filters, setFilters] = useState(initialFilterState);
