@@ -65,33 +65,30 @@ const AdminContextProvider = (props) => {
     }
   };
 
-  const fetchProducts = async (filters = {}, page = 1, limit = 10) => {
+  const fetchProducts = async (filters, field, loadMore) => {
     if (!adminToken) return;
 
     try {
-      let queryParams = new URLSearchParams();
-
-      // Add filters if they exist
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          queryParams.append(key, value);
-        }
-      });
-
-      // Add pagination parameters
-      queryParams.set("page", page);
-      queryParams.set("limit", limit);
-
-      // Add fields parameter
-      queryParams.set("fields", "name,quantity,category,date");
+      let queryParams = new URLSearchParams(filters).toString();
+      let fields;
+      if (!field) {
+        fields = "name,createdAt,quantity,category";
+      } else {
+        fields = field;
+      }
+      queryParams += `&fields=${fields}`;
 
       const response = await axios.post(
-        `${backendUrl}/api/product/list?${queryParams.toString()}`
+        `${backendUrl}/api/product/list?${queryParams}`
       );
 
       if (response.data.success) {
         if (response.data.products.length < 1) {
-          setProducts(null);
+        } else if (loadMore) {
+          setProducts((prevProducts) => [
+            ...prevProducts,
+            ...response.data.products,
+          ]);
         } else {
           setProducts(response.data.products);
         }
@@ -143,7 +140,7 @@ const AdminContextProvider = (props) => {
     }
   };
 
-  const fetchAllOrders = async () => {
+  const fetchAllOrders = async (filters) => {
     if (!adminToken) return;
     setLoading(true);
     try {

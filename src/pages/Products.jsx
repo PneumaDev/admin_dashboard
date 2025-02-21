@@ -22,6 +22,7 @@ export default function ProductsPage() {
     navigate,
     productAction,
     adminToken,
+    counts,
   } = useContext(AdminContext);
 
   useEffect(() => {
@@ -53,11 +54,23 @@ export default function ProductsPage() {
     actions: "Date",
   };
 
+  const fetchMoreProducts = async (currentPage) => {
+    const nextPage = currentPage - 1;
+    if (products.length === counts[1]?.total || performedSearch) return;
+    await fetchProducts(
+      {
+        page: nextPage,
+      },
+      undefined,
+      true
+    );
+  };
+
+  console.log(products);
+
   if (fetchingProducts) {
     return <Spinner />;
   }
-
-  console.log(products);
 
   return (
     <div className="p-6 bg-[var(--card-bg)] rounded-lg">
@@ -119,8 +132,10 @@ export default function ProductsPage() {
           )}
         </div>
 
-        {products ? (
+        {products && products.length > 0 ? (
           <Table
+            count={counts[1]?.total ?? 0}
+            fetchMoreData={fetchMoreProducts}
             columnHeader={columnHeader}
             products={products}
             renderRow={(itemData, index) => (
@@ -164,7 +179,7 @@ export default function ProductsPage() {
                   {itemData.category}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap font-muktaVaani text-sm text-[var(--text-color)] transition-standard">
-                  {new Date(itemData.date).toLocaleDateString()}
+                  {new Date(itemData.createdAt).toLocaleDateString()}
                 </td>
               </tr>
             )}
