@@ -10,6 +10,7 @@ export const AdminContext = createContext();
 const AdminContextProvider = (props) => {
   // <------------Constants and States------------>
   const [action, setAction] = useState("");
+  const [verifiedOrder, setVerifiedOrder] = useState({});
   const [itemData, setItemData] = useState({});
   const [openModal, setOpenModal] = useState(false);
   const [orders, setOrders] = useState([]);
@@ -198,6 +199,8 @@ const AdminContextProvider = (props) => {
     fetchCustomers,
     counts,
     setCounts,
+    verifiedOrder,
+    setVerifiedOrder,
   };
 
   return (
