@@ -5,10 +5,13 @@ import { AdminContext } from "../context/AdminContext";
 import OrderItem from "../components/OrderItem";
 import Spinner from "../components/Spinner";
 import axios from "axios";
+import Modal from "../components/Modal";
+import VerifyPayments from "../components/VerifyPayments";
 
 const Order = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
   const { orderId } = useParams();
   const { orders, backendUrl, adminToken } = useContext(AdminContext);
 
@@ -50,6 +53,14 @@ const Order = () => {
   return (
     <div className="py-4 flex justify-center items-center">
       <div className="bg-[var(--card-bg)] transition-standard shadow-md rounded-md w-full">
+        <Modal
+          isOpen={openModal}
+          onClose={() => setOpenModal(false)}
+          title={"Payment Verification"}
+          button2={"Close"}
+        >
+          <VerifyPayments order={order} />
+        </Modal>
         <div className="p-4 border-b">
           <h1 className="text-xl font-semibold text-[var(--text-color)] transition-standard flex items-center font-imprima">
             <PackageCheck className="mr-2 text-green-500 " />
@@ -172,7 +183,7 @@ const Order = () => {
           </div>
 
           {/* Admin Features */}
-          <div className="flex justify-end">
+          <div className="flex justify-end" onClick={() => setOpenModal(true)}>
             <button className="p-2 bg-green-300 rounded-md font-muktaVaani hover:bg-green-400 text-black text-sm">
               Verify Payment
             </button>
