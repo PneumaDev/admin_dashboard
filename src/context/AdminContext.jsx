@@ -69,6 +69,8 @@ const AdminContextProvider = (props) => {
   const fetchProducts = async (filters, field, loadMore) => {
     if (!adminToken) return;
 
+    setLoading(true);
+
     try {
       let queryParams = new URLSearchParams(filters).toString();
       let fields;
@@ -99,6 +101,8 @@ const AdminContextProvider = (props) => {
     } catch (error) {
       console.log(error);
       toast.error(error.message, { id: "products_error" });
+    } finally {
+      setLoading(false);
     }
   };
 
