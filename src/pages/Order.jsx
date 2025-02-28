@@ -7,7 +7,6 @@ import Spinner from "../components/Spinner";
 import axios from "axios";
 import Modal from "../components/Modal";
 import VerifyPayments from "../components/VerifyPayments";
-import { useRef } from "react";
 import { toast } from "react-hot-toast";
 
 const Order = () => {
