@@ -12,7 +12,7 @@ import {
   Sun,
   ImageIcon,
   Presentation,
-  Factory,
+  Truck,
 } from "lucide-react";
 import { AdminContext } from "../context/AdminContext";
 import axios from "axios";
@@ -83,7 +83,7 @@ const Navbar = () => {
       count: counts[0]?.total ?? 0,
     },
     {
-      icon: Factory,
+      icon: Truck,
       label: "Suppliers",
       path: "/suppliers",
       count: null,
