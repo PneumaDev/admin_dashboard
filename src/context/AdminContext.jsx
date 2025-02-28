@@ -46,32 +46,32 @@ const AdminContextProvider = (props) => {
   }, [theme]);
 
   useEffect(() => {
-    const eventSource = new EventSource(
-      backendUrl + "/api/order/admin-notifications"
-    );
+    const connectSSE = () => {
+      const eventSource = new EventSource(
+        backendUrl + "/api/order/admin-notifications"
+      );
 
-    eventSource.onmessage = (event) => {
-      try {
-        const parsedData = JSON.parse(event.data);
+      eventSource.onmessage = (event) => {
+        try {
+          const parsedData = JSON.parse(event.data);
+          setMessages((prev) => [...prev, parsedData]);
+          toast.success(parsedData.message);
+        } catch (error) {
+          console.error("Error parsing SSE data:", error);
+        }
+      };
 
-        setMessages((prev) => [...prev, parsedData]);
-
-        toast.success(parsedData.message, {
-          id: "notifications",
-          duration: 4000,
-        });
-      } catch (error) {
-        console.error("Error parsing SSE message:", error);
-      }
+      eventSource.onerror = () => {
+        console.error("SSE connection lost, reconnecting in 5s...");
+        eventSource.close();
+        setTimeout(connectSSE, 5000);
+      };
     };
 
-    eventSource.onerror = (error) => {
-      console.error("SSE connection failed:", error);
-      eventSource.close();
-    };
+    connectSSE();
 
     return () => {
-      eventSource.close();
+      eventSource?.close();
     };
   }, []);
 
