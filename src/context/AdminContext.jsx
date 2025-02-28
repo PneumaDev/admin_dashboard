@@ -19,7 +19,6 @@ const AdminContextProvider = (props) => {
   const [loading, setLoading] = useState(true);
   const [adminToken, setAdminToken] = useState(null);
   const [counts, setCounts] = useState([]);
-  const [messages, setMessages] = useState([]);
 
   const [performedSearch, setPerformedSearch] = useState(false);
   const [theme, setTheme] = useState(
@@ -44,38 +43,6 @@ const AdminContextProvider = (props) => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
   }, [theme]);
-
-  useEffect(() => {
-    const connectSSE = () => {
-      const eventSource = new EventSource(
-        backendUrl + "/api/order/admin-notifications"
-      );
-
-      eventSource.onmessage = (event) => {
-        try {
-          const parsedData = JSON.parse(event.data);
-          setMessages((prev) => [...prev, parsedData]);
-          toast.success(parsedData.message);
-        } catch (error) {
-          console.error("Error parsing SSE data:", error);
-        }
-      };
-
-      eventSource.onerror = () => {
-        console.error("SSE connection lost, reconnecting in 5s...");
-        eventSource.close();
-        setTimeout(connectSSE, 5000);
-      };
-    };
-
-    connectSSE();
-
-    return () => {
-      eventSource?.close();
-    };
-  }, []);
-
-  console.log(messages);
 
   // <------------App functions------------>
   const logOut = () => {
