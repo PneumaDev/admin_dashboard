@@ -49,19 +49,24 @@ const AdminContextProvider = (props) => {
     const eventSource = new EventSource(
       backendUrl + "/api/order/admin-notifications"
     );
+
     eventSource.onmessage = (event) => {
-      const parsedData = JSON.parse(event.data);
+      try {
+        const parsedData = JSON.parse(event.data);
 
-      setMessages((prev) => [...prev, parsedData]);
+        setMessages((prev) => [...prev, parsedData]);
 
-      toast.success(parsedData.message, {
-        id: "notifications",
-        duration: 4000,
-      });
+        toast.success(parsedData.message, {
+          id: "notifications",
+          duration: 4000,
+        });
+      } catch (error) {
+        console.error("Error parsing SSE message:", error);
+      }
     };
 
-    eventSource.onerror = () => {
-      console.error("SSE connection failed");
+    eventSource.onerror = (error) => {
+      console.error("SSE connection failed:", error);
       eventSource.close();
     };
 
