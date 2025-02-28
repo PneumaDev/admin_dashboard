@@ -13,7 +13,7 @@ export default function VerifyPayments({ order }) {
     if (verifiedOrder.orderId === order._id) return setLoading(false);
     try {
       const response = await axios.post(
-        backendUrl + "/api/order/confirmPayment",
+        backendUrl + "/api/order/verifypayment",
         { order, admin: true },
         { headers: { token: adminToken } }
       );

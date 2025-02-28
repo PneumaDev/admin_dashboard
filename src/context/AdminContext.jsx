@@ -19,6 +19,7 @@ const AdminContextProvider = (props) => {
   const [loading, setLoading] = useState(true);
   const [adminToken, setAdminToken] = useState(null);
   const [counts, setCounts] = useState([]);
+  const [messages, setMessages] = useState([]);
 
   const [performedSearch, setPerformedSearch] = useState(false);
   const [theme, setTheme] = useState(
@@ -44,6 +45,33 @@ const AdminContextProvider = (props) => {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
+  useEffect(() => {
+    const eventSource = new EventSource(
+      backendUrl + "/api/order/admin-notifications"
+    );
+    eventSource.onmessage = (event) => {
+      const parsedData = JSON.parse(event.data);
+
+      setMessages((prev) => [...prev, parsedData]);
+
+      toast.success(parsedData.message, {
+        id: "notifications",
+        duration: 4000,
+      });
+    };
+
+    eventSource.onerror = () => {
+      console.error("SSE connection failed");
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, []);
+
+  console.log(messages);
+
   // <------------App functions------------>
   const logOut = () => {
     localStorage.removeItem("adminToken");
@@ -68,6 +96,8 @@ const AdminContextProvider = (props) => {
 
   const fetchProducts = async (filters, field, loadMore) => {
     if (!adminToken) return;
+
+    setLoading(true);
 
     try {
       let queryParams = new URLSearchParams(filters).toString();
@@ -99,6 +129,8 @@ const AdminContextProvider = (props) => {
     } catch (error) {
       console.log(error);
       toast.error(error.message, { id: "products_error" });
+    } finally {
+      setLoading(false);
     }
   };
 

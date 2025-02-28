@@ -90,7 +90,7 @@ export default function Customers() {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium  flex items-center font-muktaVaani text-[var(--text-color)] transition-standard">
-                    -
+                    {new Date(customer.createdAt).toLocaleDateString()}
                   </div>
                 </td>
               </tr>

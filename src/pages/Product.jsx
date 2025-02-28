@@ -13,6 +13,7 @@ import {
   List,
   Award,
   ClipboardList,
+  ShoppingCart,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { AdminContext } from "../context/AdminContext";
@@ -38,6 +39,8 @@ export default function Product() {
     navigate,
     fetchProducts,
   } = useContext(AdminContext);
+
+  console.log(product);
 
   const fetchProduct = async () => {
     try {
@@ -296,6 +299,16 @@ export default function Product() {
               </DetailItem>
               <DetailItem icon={<BarChart />} title="Stock Quantity">
                 {product.quantity} units
+              </DetailItem>
+              <DetailItem icon={<Award />} title="Best Seller">
+                {product.bestSeller === true ? (
+                  <span className="text-green-500 font-semibold">Yes</span>
+                ) : (
+                  <span className="text-red-500 font-semibold">No</span>
+                )}
+              </DetailItem>
+              <DetailItem icon={<ShoppingCart />} title="Total Sold">
+                {product.totalSold ?? 0} units
               </DetailItem>
             </div>
           </div>
