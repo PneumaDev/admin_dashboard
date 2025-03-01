@@ -18,8 +18,8 @@ export const messaging = getMessaging(app);
 // Request Notification Permission and Get Token
 export const getAdminFCMToken = async () => {
     try {
-        const permission = await Notification.requestPermission();
-        if (permission !== "granted") {
+        // const permission = await Notification.requestPermission();
+        if (Notification.permission !== "granted") {
             console.error("User denied notification permission.");
             return;
         }
