@@ -4,6 +4,8 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Cloudinary } from "@cloudinary/url-gen";
 import { initialState } from "../assets/assets";
+import { getAdminFCMToken, messaging } from "./../utils/firebase";
+import { onMessage } from "firebase/messaging";
 
 export const AdminContext = createContext();
 
@@ -43,6 +45,16 @@ const AdminContextProvider = (props) => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    if (adminToken) {
+      getAdminFCMToken(adminToken);
+      onMessage(messaging, (payload) => {
+        console.log(payload);
+        toast.success("New notification recieved!");
+      });
+    }
+  }, [adminToken]);
 
   // <------------App functions------------>
   const logOut = () => {
