@@ -50,7 +50,7 @@ const Navbar = () => {
 
   const getCountTotal = async () => {
     try {
-      const response = await axios.get(`${backendUrl}/api/user/count`);
+      const response = await axios.get(`${backendUrl}/api/order/count`);
       setCounts(response.data.counts);
     } catch (error) {
       console.log(error);

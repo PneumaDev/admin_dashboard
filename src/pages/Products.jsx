@@ -56,6 +56,7 @@ export default function ProductsPage() {
 
   const fetchMoreProducts = async (currentPage) => {
     const nextPage = currentPage - 1;
+    console.log(nextPage);
     if (products.length === counts[1]?.total || performedSearch) return;
     await fetchProducts(
       {

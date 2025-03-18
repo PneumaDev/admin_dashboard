@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { useColor } from "react-color-palette";
 import "react-color-palette/css";
 import Modal from "./Modal";

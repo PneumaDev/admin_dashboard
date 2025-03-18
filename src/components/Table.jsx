@@ -30,7 +30,7 @@ export default function Table({
     if (currentPage === totalPages && products.length <= count) {
       fetchMoreData(currentPage);
     }
-  }, [currentPage, totalPages, count, fetchMoreData]);
+  }, [currentPage, totalPages]);
 
   return (
     <div className="rounded-lg shadow overflow-hidden">

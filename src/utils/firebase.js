@@ -25,7 +25,7 @@ export const getAdminFCMToken = async () => {
         }
 
         const token = await getToken(messaging, {
-            vapidKey: "BKcZYUSP9XksawNPUqvFT01-gRMMqfpTQR6Tp6WhWiOj5xXGs3nggBXbLRustxDT9Axi7nkJn98maXN73GbSsCU",
+            vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
         });
 
         if (token) {
